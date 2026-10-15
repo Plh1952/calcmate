@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Pregnancy Weight Gain Calculator | CalcMate</title>
+<meta name="description" content="Pregnancy weight gain calculator: recommended weight gain range from pre-pregnancy BMI (IOM guidelines).">
+<link rel="canonical" href="https://plh1952.github.io/calcmate/pregnancy-weight-gain-calculator.html">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='6' fill='%230f766e'/%3E%3Ctext x='16' y='23' font-size='17' font-family='Arial' font-weight='bold' fill='white' text-anchor='middle'%3E%25%3C/text%3E%3C/svg%3E">
+<link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+<header class="site-head"><a class="brand" href="index.html">Calc<span>Mate</span></a></header>
+<main>
+<nav class="crumbs"><a href="index.html">Calculators</a> &rsaquo; Pregnancy</nav>
+<h1>Pregnancy Weight Gain Calculator</h1>
+<p class="lead">See the recommended weight gain for your pregnancy based on your pre-pregnancy BMI and current week.</p>
+<form class="calc" onsubmit="return run(event)">
+<div class="frow"><label for="in_weight">Pre-pregnancy weight (kg)</label><input type="number" id="in_weight" value="60" step="any"></div>
+<div class="frow"><label for="in_height">Height (cm)</label><input type="number" id="in_height" value="165" step="any"></div>
+<div class="frow"><label for="in_week">Current week of pregnancy</label><input type="number" id="in_week" value="20" step="1"></div>
+<button type="submit">Calculate</button>
+</form>
+<div id="result"></div>
+<section class="about"><h2>About the Pregnancy Weight Gain Calculator</h2><p>Institute of Medicine (IOM) ranges for a singleton pregnancy: underweight (BMI&lt;18.5): 28-40 lb; normal (18.5-24.9): 25-35 lb; overweight (25-29.9): 15-25 lb; obese (30+): 11-20 lb. Gain is slow in the first trimester, then about a pound a week.</p><p>Informational only, not medical advice.</p></section>
+<section class="related"><h2>Related Pregnancy calculators</h2><p><a href="due-date-calculator.html">Due Date Calculator</a> &nbsp; <a href="ovulation-calculator.html">Ovulation Calculator</a> &nbsp; <a href="period-calculator.html">Period Calculator</a> &nbsp; <a href="pregnancy-week-by-week-calculator.html">Pregnancy Calculator</a></p></section>
+</main>
+<footer><p>CalcMate &mdash; free online calculators. Results are estimates for general information only, not professional advice.</p></footer>
+<script>
+function v(id){var e=document.getElementById('in_'+id); if(!e) return '';
+ if(e.type==='number'){ if(e.value==='') return NaN; return parseFloat(e.value);} return e.value;}
+function err(m){throw new Error(m);}
+function fmt(n,d){d=(d===undefined)?2:d; if(typeof n!=='number'||!isFinite(n)) return '—';
+ return n.toLocaleString('en-US',{minimumFractionDigits:Math.min(d,2),maximumFractionDigits:d});}
+function show(html){document.getElementById('result').innerHTML='<div class="box ok">'+html+'</div>';}
+function showErr(m){document.getElementById('result').innerHTML='<div class="box error">'+m+'</div>';}
+function run(e){e.preventDefault(); try{compute();}catch(ex){ if(ex instanceof Error && ex.message) showErr(ex.message);} return false;}
+
+
+function compute(){
+var w=v('weight'), h=v('height'), wk=v('week');
+if(!(w>0)||!(h>0)) err('Enter positive weight and height.');
+if(isNaN(wk)||wk<0||wk>42) err('Week should be between 0 and 42.');
+var bmi=w/Math.pow(h/100,2);
+var r=bmi<18.5? [28,40] : bmi<25? [25,35] : bmi<30? [15,25] : [11,20];
+var lo=wk<=13? 0 : Math.min(r[0], r[0]*(wk-13)/27+1.1);
+var hi=wk<=13? 2.2 : Math.min(r[1], r[1]*(wk-13)/27+2.2);
+show('<p>Pre-pregnancy BMI: <b>'+fmt(bmi,1)+'</b> ('+(bmi<18.5?'underweight':bmi<25?'normal weight':bmi<30?'overweight':'obese')+')</p><p>Total recommended gain: <b>'+r[0]+'-'+r[1]+' lb</b> ('+fmt(r[0]*0.4536,1)+'-'+fmt(r[1]*0.4536,1)+' kg)</p><p>By week '+Math.floor(wk)+', a typical gain is around <b>'+fmt(lo*0.4536,1)+'-'+fmt(hi*0.4536,1)+' kg</b> ('+fmt(lo,1)+'-'+fmt(hi,1)+' lb)</p>');
+}
+</script>
+</body></html>

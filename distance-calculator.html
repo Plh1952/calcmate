@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Distance Calculator | CalcMate</title>
+<meta name="description" content="Distance formula calculator between two points in 2D or 3D coordinates.">
+<link rel="canonical" href="https://plh1952.github.io/calcmate/distance-calculator.html">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='6' fill='%230f766e'/%3E%3Ctext x='16' y='23' font-size='17' font-family='Arial' font-weight='bold' fill='white' text-anchor='middle'%3E%25%3C/text%3E%3C/svg%3E">
+<link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+<header class="site-head"><a class="brand" href="index.html">Calc<span>Mate</span></a></header>
+<main>
+<nav class="crumbs"><a href="index.html">Calculators</a> &rsaquo; Geometry</nav>
+<h1>Distance Between Two Points Calculator</h1>
+<p class="lead">Find the distance between two points, in 2D or 3D, from their coordinates.</p>
+<form class="calc" onsubmit="return run(event)">
+<div class="frow"><label for="in_x1">x1</label><input type="number" id="in_x1" value="0" step="any"></div>
+<div class="frow"><label for="in_y1">y1</label><input type="number" id="in_y1" value="0" step="any"></div>
+<div class="frow"><label for="in_z1">z1 ((3D only))</label><input type="number" id="in_z1" step="any"></div>
+<div class="frow"><label for="in_x2">x2</label><input type="number" id="in_x2" value="3" step="any"></div>
+<div class="frow"><label for="in_y2">y2</label><input type="number" id="in_y2" value="4" step="any"></div>
+<div class="frow"><label for="in_z2">z2 ((3D only))</label><input type="number" id="in_z2" step="any"></div>
+<button type="submit">Calculate</button>
+</form>
+<div id="result"></div>
+<section class="about"><h2>About the Distance Calculator</h2><p>The distance formula comes from the Pythagorean theorem: <b>d = &radic;((x2&minus;x1)&sup2; + (y2&minus;y1)&sup2;)</b>, adding (z2&minus;z1)&sup2; in 3D. Leave the z fields blank for 2D.</p></section>
+<section class="related"><h2>Related Geometry calculators</h2><p><a href="area-calculator.html">Area Calculator</a> &nbsp; <a href="circle-calculator.html">Circle Calculator</a> &nbsp; <a href="pythagorean-theorem-calculator.html">Pythagorean Theorem Calculator</a> &nbsp; <a href="right-triangle-calculator.html">Right Triangle Calculator</a> &nbsp; <a href="slope-calculator.html">Slope Calculator</a> &nbsp; <a href="surface-area-calculator.html">Surface Area Calculator</a> &nbsp; <a href="triangle-calculator.html">Triangle Calculator</a> &nbsp; <a href="volume-calculator.html">Volume Calculator</a></p></section>
+</main>
+<footer><p>CalcMate &mdash; free online calculators. Results are estimates for general information only, not professional advice.</p></footer>
+<script>
+function v(id){var e=document.getElementById('in_'+id); if(!e) return '';
+ if(e.type==='number'){ if(e.value==='') return NaN; return parseFloat(e.value);} return e.value;}
+function err(m){throw new Error(m);}
+function fmt(n,d){d=(d===undefined)?2:d; if(typeof n!=='number'||!isFinite(n)) return '—';
+ return n.toLocaleString('en-US',{minimumFractionDigits:Math.min(d,2),maximumFractionDigits:d});}
+function show(html){document.getElementById('result').innerHTML='<div class="box ok">'+html+'</div>';}
+function showErr(m){document.getElementById('result').innerHTML='<div class="box error">'+m+'</div>';}
+function run(e){e.preventDefault(); try{compute();}catch(ex){ if(ex instanceof Error && ex.message) showErr(ex.message);} return false;}
+
+
+function compute(){
+var x1=v('x1'), y1=v('y1'), x2=v('x2'), y2=v('y2'), z1=v('z1'), z2=v('z2');
+if([x1,y1,x2,y2].some(isNaN)) err('Enter x and y for both points.');
+var dx=x2-x1, dy=y2-y1;
+if(z1===''||z2===''||isNaN(z1)||isNaN(z2)){
+ var d=Math.sqrt(dx*dx+dy*dy);
+ show('<p>Distance (2D): <b>'+fmt(d,8)+'</b></p><p class="small">&radic;(('+x2+'-'+x1+')&sup2; + ('+y2+'-'+y1+')&sup2;)</p>');}
+else{ var dz=z2-z1; var d=Math.sqrt(dx*dx+dy*dy+dz*dz);
+ show('<p>Distance (3D): <b>'+fmt(d,8)+'</b></p><p class="small">&radic;(('+x2+'-'+x1+')&sup2; + ('+y2+'-'+y1+')&sup2; + ('+z2+'-'+z1+')&sup2;)</p>');}
+}
+</script>
+</body></html>

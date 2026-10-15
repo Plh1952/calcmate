@@ -1,0 +1,3 @@
+User-agent: *
+Allow: /
+Sitemap: https://plh1952.github.io/calcmate/sitemap.xml

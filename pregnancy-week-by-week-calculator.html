@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Pregnancy Calculator | CalcMate</title>
+<meta name="description" content="Pregnancy week by week calculator: current week, trimester and countdown from your due date.">
+<link rel="canonical" href="https://plh1952.github.io/calcmate/pregnancy-week-by-week-calculator.html">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='6' fill='%230f766e'/%3E%3Ctext x='16' y='23' font-size='17' font-family='Arial' font-weight='bold' fill='white' text-anchor='middle'%3E%25%3C/text%3E%3C/svg%3E">
+<link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+<header class="site-head"><a class="brand" href="index.html">Calc<span>Mate</span></a></header>
+<main>
+<nav class="crumbs"><a href="index.html">Calculators</a> &rsaquo; Pregnancy</nav>
+<h1>Pregnancy Week by Week Calculator</h1>
+<p class="lead">Enter your due date to see exactly where you are: current week and day, trimester, and countdown.</p>
+<form class="calc" onsubmit="return run(event)">
+<div class="frow"><label for="in_due">Your due date</label><input type="date" id="in_due"></div>
+<button type="submit">Calculate</button>
+</form>
+<div id="result"></div>
+<section class="about"><h2>About the Pregnancy Calculator</h2><p>Gestational age runs from the LMP, about two weeks before conception. Trimesters: first ends at week 13, second at week 27, third until delivery (week 40 full term).</p><p>Informational only, not medical advice.</p></section>
+<section class="related"><h2>Related Pregnancy calculators</h2><p><a href="due-date-calculator.html">Due Date Calculator</a> &nbsp; <a href="ovulation-calculator.html">Ovulation Calculator</a> &nbsp; <a href="period-calculator.html">Period Calculator</a> &nbsp; <a href="pregnancy-weight-gain-calculator.html">Pregnancy Weight Gain Calculator</a></p></section>
+</main>
+<footer><p>CalcMate &mdash; free online calculators. Results are estimates for general information only, not professional advice.</p></footer>
+<script>
+function v(id){var e=document.getElementById('in_'+id); if(!e) return '';
+ if(e.type==='number'){ if(e.value==='') return NaN; return parseFloat(e.value);} return e.value;}
+function err(m){throw new Error(m);}
+function fmt(n,d){d=(d===undefined)?2:d; if(typeof n!=='number'||!isFinite(n)) return '—';
+ return n.toLocaleString('en-US',{minimumFractionDigits:Math.min(d,2),maximumFractionDigits:d});}
+function show(html){document.getElementById('result').innerHTML='<div class="box ok">'+html+'</div>';}
+function showErr(m){document.getElementById('result').innerHTML='<div class="box error">'+m+'</div>';}
+function run(e){e.preventDefault(); try{compute();}catch(ex){ if(ex instanceof Error && ex.message) showErr(ex.message);} return false;}
+
+
+function compute(){
+var due=v('due'); if(!due) err('Please enter your due date.');
+var D=new Date(due); var today=new Date();
+var left=Math.ceil((D-today)/864e5);
+if(left<0){show('<p>Your due date has passed. If you have not delivered, contact your care provider.</p>'); throw '';}
+var ga=280-left;
+if(ga<0){show('<p>That due date is more than 40 weeks away. Please check it.</p>'); throw '';}
+var wk=Math.floor(ga/7);
+var tri=wk<13?'First trimester':wk<28?'Second trimester':'Third trimester';
+show('<p>You are <b>'+wk+' weeks and '+(ga%7)+' days</b> pregnant</p><p>Trimester: <b>'+tri+'</b></p><p>Countdown: <b>'+left+' days</b> to your due date ('+fmt(ga/280*100,1)+'% complete)</p>');
+}
+</script>
+</body></html>

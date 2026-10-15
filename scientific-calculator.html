@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Scientific Calculator | CalcMate</title>
+<meta name="description" content="Online scientific calculator with parentheses, powers, percent and operator precedence.">
+<link rel="canonical" href="https://plh1952.github.io/calcmate/scientific-calculator.html">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='6' fill='%230f766e'/%3E%3Ctext x='16' y='23' font-size='17' font-family='Arial' font-weight='bold' fill='white' text-anchor='middle'%3E%25%3C/text%3E%3C/svg%3E">
+<link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+<header class="site-head"><a class="brand" href="index.html">Calc<span>Mate</span></a></header>
+<main>
+<nav class="crumbs"><a href="index.html">Calculators</a> &rsaquo; Math</nav>
+<h1>Scientific Calculator</h1>
+<p class="lead">Evaluate expressions with full operator precedence: parentheses, powers, multiplication before addition, and percent.</p>
+<form class="calc" onsubmit="return run(event)">
+<div class="frow"><label for="in_expr">Expression</label><input type="text" id="in_expr" class="wide" value="(2+3)^2 - 10% * 200"></div>
+<button type="submit">Calculate</button>
+</form>
+<div id="result"></div>
+<section class="about"><h2>About the Scientific Calculator</h2><p>Standard precedence: parentheses first, then ^ (powers), then &times; and &divide;, then + and &minus;. The percent sign converts the preceding number to a fraction (10% of 200 is written 10% * 200).</p></section>
+<section class="related"><h2>Related Math calculators</h2><p><a href="exponent-calculator.html">Exponent Calculator</a> &nbsp; <a href="factor-calculator.html">Factor Calculator</a> &nbsp; <a href="gcf-calculator.html">Greatest Common Factor Calculator</a> &nbsp; <a href="lcm-calculator.html">Least Common Multiple Calculator</a> &nbsp; <a href="log-calculator.html">Log Calculator</a> &nbsp; <a href="percentage-calculator.html">Percentage Calculator</a> &nbsp; <a href="ratio-calculator.html">Ratio Calculator</a> &nbsp; <a href="root-calculator.html">Root Calculator</a></p></section>
+</main>
+<footer><p>CalcMate &mdash; free online calculators. Results are estimates for general information only, not professional advice.</p></footer>
+<script>
+function v(id){var e=document.getElementById('in_'+id); if(!e) return '';
+ if(e.type==='number'){ if(e.value==='') return NaN; return parseFloat(e.value);} return e.value;}
+function err(m){throw new Error(m);}
+function fmt(n,d){d=(d===undefined)?2:d; if(typeof n!=='number'||!isFinite(n)) return '—';
+ return n.toLocaleString('en-US',{minimumFractionDigits:Math.min(d,2),maximumFractionDigits:d});}
+function show(html){document.getElementById('result').innerHTML='<div class="box ok">'+html+'</div>';}
+function showErr(m){document.getElementById('result').innerHTML='<div class="box error">'+m+'</div>';}
+function run(e){e.preventDefault(); try{compute();}catch(ex){ if(ex instanceof Error && ex.message) showErr(ex.message);} return false;}
+
+
+function compute(){
+var e=(v('expr')||'').replace(/\s+/g,'');
+if(!e) err('Type an expression.');
+if(!/^[0-9+\-*/().^%eE,]+$/.test(e)) err('Only numbers and the operators + - * / ( ) ^ % are allowed.');
+e=e.replace(/,/g,'').replace(/\^/g,'**').replace(/([0-9.]+)%/g,'($1/100)');
+var r;
+try{ r=Function('"use strict";return ('+e+')')(); }catch(ex){ err('That expression could not be evaluated.'); }
+if(typeof r!=='number'||!isFinite(r)) err('The result is not a finite number.');
+show('<p>'+v('expr')+' = <b>'+fmt(r,12)+'</b></p>');
+}
+</script>
+</body></html>

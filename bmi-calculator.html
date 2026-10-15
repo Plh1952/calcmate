@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>BMI Calculator | CalcMate</title>
+<meta name="description" content="Free BMI calculator in metric and imperial units, with WHO weight category and healthy weight range.">
+<link rel="canonical" href="https://plh1952.github.io/calcmate/bmi-calculator.html">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='6' fill='%230f766e'/%3E%3Ctext x='16' y='23' font-size='17' font-family='Arial' font-weight='bold' fill='white' text-anchor='middle'%3E%25%3C/text%3E%3C/svg%3E">
+<link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+<header class="site-head"><a class="brand" href="index.html">Calc<span>Mate</span></a></header>
+<main>
+<nav class="crumbs"><a href="index.html">Calculators</a> &rsaquo; Health</nav>
+<h1>BMI Calculator</h1>
+<p class="lead">Calculate your Body Mass Index in metric or imperial units, with your weight category and healthy range.</p>
+<form class="calc" onsubmit="return run(event)">
+<div class="frow"><label for="in_units">Units</label><select id="in_units"><option value="metric" selected>Metric (kg, cm)</option><option value="imperial">Imperial (lb, ft/in)</option></select></div>
+<div class="frow" data-for="metric"><label for="in_kg">Weight (kg)</label><input type="number" id="in_kg" value="70" step="any"></div>
+<div class="frow" data-for="metric"><label for="in_cm">Height (cm)</label><input type="number" id="in_cm" value="170" step="any"></div>
+<div class="frow" data-for="imperial"><label for="in_lb">Weight (lb)</label><input type="number" id="in_lb" value="155" step="any"></div>
+<div class="frow" data-for="imperial"><label for="in_ft">Height (feet)</label><input type="number" id="in_ft" value="5" step="1"></div>
+<div class="frow" data-for="imperial"><label for="in_inch">Height (extra) (inches)</label><input type="number" id="in_inch" value="7" step="1"></div>
+<button type="submit">Calculate</button>
+</form>
+<div id="result"></div>
+<section class="about"><h2>About the BMI Calculator</h2><p>BMI = <b>weight(kg) / height(m)&sup2;</b>. WHO categories: under 18.5 underweight, 18.5-24.9 normal, 25-29.9 overweight, 30+ obese. BMI ignores muscle mass and fat distribution, so treat it as a rough screening tool, not a diagnosis.</p><p>Informational only, not medical advice.</p></section>
+<section class="related"><h2>Related Health calculators</h2><p><a href="body-fat-calculator.html">Body Fat Calculator</a> &nbsp; <a href="calorie-calculator.html">Calorie Calculator</a></p></section>
+</main>
+<footer><p>CalcMate &mdash; free online calculators. Results are estimates for general information only, not professional advice.</p></footer>
+<script>
+function v(id){var e=document.getElementById('in_'+id); if(!e) return '';
+ if(e.type==='number'){ if(e.value==='') return NaN; return parseFloat(e.value);} return e.value;}
+function err(m){throw new Error(m);}
+function fmt(n,d){d=(d===undefined)?2:d; if(typeof n!=='number'||!isFinite(n)) return '—';
+ return n.toLocaleString('en-US',{minimumFractionDigits:Math.min(d,2),maximumFractionDigits:d});}
+function show(html){document.getElementById('result').innerHTML='<div class="box ok">'+html+'</div>';}
+function showErr(m){document.getElementById('result').innerHTML='<div class="box error">'+m+'</div>';}
+function run(e){e.preventDefault(); try{compute();}catch(ex){ if(ex instanceof Error && ex.message) showErr(ex.message);} return false;}
+
+(function(){var ctl=document.querySelector('select'); if(!ctl) return;
+function upd(){var val=ctl.value;
+ document.querySelectorAll('[data-for]').forEach(function(r){
+  r.style.display=(r.getAttribute('data-for').split(',').indexOf(val)>=0)?'':'none';});}
+ctl.addEventListener('change',upd); upd();})();
+
+function compute(){
+var u=v('units'), w, hm;
+if(u==='metric'){w=v('kg'); hm=v('cm')/100;}
+else{w=v('lb')*0.4536; hm=(v('ft')*12+(v('inch')||0))*0.0254;}
+if(!(w>0)||!(hm>0)) err('Enter positive weight and height.');
+var bmi=w/(hm*hm);
+var cat=bmi<18.5?'Underweight':bmi<25?'Normal weight':bmi<30?'Overweight':'Obese';
+var lo=18.5*hm*hm, hi=24.9*hm*hm;
+show('<p>Your BMI: <b>'+fmt(bmi,1)+'</b></p><p>Category: <b>'+cat+'</b></p><p>Healthy weight for your height: <b>'+fmt(lo,1)+' - '+fmt(hi,1)+' kg</b> ('+fmt(lo/0.4536,0)+' - '+fmt(hi/0.4536,0)+' lb)</p>');
+}
+</script>
+</body></html>

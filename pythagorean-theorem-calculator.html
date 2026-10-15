@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Pythagorean Theorem Calculator | CalcMate</title>
+<meta name="description" content="Pythagorean theorem calculator: find the hypotenuse or a missing leg of a right triangle.">
+<link rel="canonical" href="https://plh1952.github.io/calcmate/pythagorean-theorem-calculator.html">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='6' fill='%230f766e'/%3E%3Ctext x='16' y='23' font-size='17' font-family='Arial' font-weight='bold' fill='white' text-anchor='middle'%3E%25%3C/text%3E%3C/svg%3E">
+<link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+<header class="site-head"><a class="brand" href="index.html">Calc<span>Mate</span></a></header>
+<main>
+<nav class="crumbs"><a href="index.html">Calculators</a> &rsaquo; Geometry</nav>
+<h1>Pythagorean Theorem Calculator</h1>
+<p class="lead">Apply a&amp;sup2; + b&amp;sup2; = c&amp;sup2;: find the hypotenuse or a missing leg of a right triangle.</p>
+<form class="calc" onsubmit="return run(event)">
+<div class="frow"><label for="in_mode">Solve for</label><select id="in_mode"><option value="c" selected>Hypotenuse c (given legs a, b)</option><option value="b">Leg b (given leg a, hypotenuse c)</option></select></div>
+<div class="frow"><label for="in_a">a</label><input type="number" id="in_a" value="3" step="any"></div>
+<div class="frow" data-for="c"><label for="in_b">b ((for hypotenuse mode))</label><input type="number" id="in_b" value="4" step="any"></div>
+<div class="frow" data-for="b"><label for="in_c">c (hypotenuse)</label><input type="number" id="in_c" value="5" step="any"></div>
+<button type="submit">Calculate</button>
+</form>
+<div id="result"></div>
+<section class="about"><h2>About the Pythagorean Theorem Calculator</h2><p>In a right triangle, the square of the hypotenuse equals the sum of the squares of the legs: <b>a&sup2; + b&sup2; = c&sup2;</b>. The 3-4-5 triangle is the classic integer case (9 + 16 = 25).</p></section>
+<section class="related"><h2>Related Geometry calculators</h2><p><a href="area-calculator.html">Area Calculator</a> &nbsp; <a href="circle-calculator.html">Circle Calculator</a> &nbsp; <a href="distance-calculator.html">Distance Calculator</a> &nbsp; <a href="right-triangle-calculator.html">Right Triangle Calculator</a> &nbsp; <a href="slope-calculator.html">Slope Calculator</a> &nbsp; <a href="surface-area-calculator.html">Surface Area Calculator</a> &nbsp; <a href="triangle-calculator.html">Triangle Calculator</a> &nbsp; <a href="volume-calculator.html">Volume Calculator</a></p></section>
+</main>
+<footer><p>CalcMate &mdash; free online calculators. Results are estimates for general information only, not professional advice.</p></footer>
+<script>
+function v(id){var e=document.getElementById('in_'+id); if(!e) return '';
+ if(e.type==='number'){ if(e.value==='') return NaN; return parseFloat(e.value);} return e.value;}
+function err(m){throw new Error(m);}
+function fmt(n,d){d=(d===undefined)?2:d; if(typeof n!=='number'||!isFinite(n)) return '—';
+ return n.toLocaleString('en-US',{minimumFractionDigits:Math.min(d,2),maximumFractionDigits:d});}
+function show(html){document.getElementById('result').innerHTML='<div class="box ok">'+html+'</div>';}
+function showErr(m){document.getElementById('result').innerHTML='<div class="box error">'+m+'</div>';}
+function run(e){e.preventDefault(); try{compute();}catch(ex){ if(ex instanceof Error && ex.message) showErr(ex.message);} return false;}
+
+(function(){var ctl=document.querySelector('select'); if(!ctl) return;
+function upd(){var val=ctl.value;
+ document.querySelectorAll('[data-for]').forEach(function(r){
+  r.style.display=(r.getAttribute('data-for').split(',').indexOf(val)>=0)?'':'none';});}
+ctl.addEventListener('change',upd); upd();})();
+
+function compute(){
+var m=v('mode'), a=v('a');
+if(!(a>0)) err('Enter a positive value for a.');
+if(m==='c'){var b=v('b'); if(!(b>0)) err('Enter a positive value for b.');
+ var c=Math.sqrt(a*a+b*b);
+ show('<p>c = &radic;('+a+'&sup2; + '+b+'&sup2;) = <b>'+fmt(c,8)+'</b></p>');}
+else{var c=v('c'); if(!(c>0)) err('Enter a positive hypotenuse.');
+ if(c<=a) err('The hypotenuse must be longer than leg a.');
+ var b=Math.sqrt(c*c-a*a);
+ show('<p>b = &radic;('+c+'&sup2; - '+a+'&sup2;) = <b>'+fmt(b,8)+'</b></p>');}
+}
+</script>
+</body></html>

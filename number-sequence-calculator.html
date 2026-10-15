@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Number Sequence Calculator | CalcMate</title>
+<meta name="description" content="Arithmetic and geometric sequence calculator: nth term, partial list and sum of the sequence.">
+<link rel="canonical" href="https://plh1952.github.io/calcmate/number-sequence-calculator.html">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='6' fill='%230f766e'/%3E%3Ctext x='16' y='23' font-size='17' font-family='Arial' font-weight='bold' fill='white' text-anchor='middle'%3E%25%3C/text%3E%3C/svg%3E">
+<link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+<header class="site-head"><a class="brand" href="index.html">Calc<span>Mate</span></a></header>
+<main>
+<nav class="crumbs"><a href="index.html">Calculators</a> &rsaquo; Statistics</nav>
+<h1>Number Sequence Calculator</h1>
+<p class="lead">Explore arithmetic and geometric sequences: nth term, the first terms, and the sum of the first n.</p>
+<form class="calc" onsubmit="return run(event)">
+<div class="frow"><label for="in_mode">Sequence type</label><select id="in_mode"><option value="arith" selected>Arithmetic (add d)</option><option value="geo">Geometric (multiply by r)</option></select></div>
+<div class="frow"><label for="in_a1">First term (a1)</label><input type="number" id="in_a1" value="2" step="any"></div>
+<div class="frow"><label for="in_d">d (or r for geometric)</label><input type="number" id="in_d" value="3" step="any"></div>
+<div class="frow"><label for="in_n">Find the n-th term, n =</label><input type="number" id="in_n" value="10" step="1"></div>
+<button type="submit">Calculate</button>
+</form>
+<div id="result"></div>
+<section class="about"><h2>About the Number Sequence Calculator</h2><p>Arithmetic: each term adds a fixed d; the nth term is a + (n&minus;1)d and the sum is n(a + last)/2. Geometric: each term multiplies by r; the nth term is a&times;r<sup>n&minus;1</sup>.</p></section>
+<section class="related"><h2>Related Statistics calculators</h2><p><a href="probability-calculator.html">Probability Calculator</a> &nbsp; <a href="sample-size-calculator.html">Sample Size Calculator</a> &nbsp; <a href="standard-deviation-calculator.html">Standard Deviation Calculator</a> &nbsp; <a href="z-score-calculator.html">Z-score Calculator</a></p></section>
+</main>
+<footer><p>CalcMate &mdash; free online calculators. Results are estimates for general information only, not professional advice.</p></footer>
+<script>
+function v(id){var e=document.getElementById('in_'+id); if(!e) return '';
+ if(e.type==='number'){ if(e.value==='') return NaN; return parseFloat(e.value);} return e.value;}
+function err(m){throw new Error(m);}
+function fmt(n,d){d=(d===undefined)?2:d; if(typeof n!=='number'||!isFinite(n)) return '—';
+ return n.toLocaleString('en-US',{minimumFractionDigits:Math.min(d,2),maximumFractionDigits:d});}
+function show(html){document.getElementById('result').innerHTML='<div class="box ok">'+html+'</div>';}
+function showErr(m){document.getElementById('result').innerHTML='<div class="box error">'+m+'</div>';}
+function run(e){e.preventDefault(); try{compute();}catch(ex){ if(ex instanceof Error && ex.message) showErr(ex.message);} return false;}
+
+
+function compute(){
+var m=v('mode'), a1=v('a1'), d=v('d'), n=Math.round(v('n'));
+if(!(n>0&&n<=1000)) err('n must be between 1 and 1000.');
+var terms=[], sum=0;
+for(var k=0;k<Math.min(n,30);k++){var t=m==='arith'? a1+k*d : a1*Math.pow(d,k); terms.push(fmt(t,6));}
+var nth=m==='arith'? a1+(n-1)*d : a1*Math.pow(d,n-1);
+if(m==='arith'){var s=0; for(var k=0;k<n;k++)s+=a1+k*d; sum=s;} else {sum=d===1? a1*n : a1*(Math.pow(d,n)-1)/(d-1);}
+show('<p>First terms: '+terms.join(', ')+(n>30?', …':'')+'</p><p>n-th term (n='+n+'): <b>'+fmt(nth,10)+'</b></p><p>Sum of the first '+n+' terms: <b>'+fmt(sum,10)+'</b></p>');
+}
+</script>
+</body></html>

@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Sample Size Calculator | CalcMate</title>
+<meta name="description" content="Survey sample size calculator from margin of error, confidence level and population size.">
+<link rel="canonical" href="https://plh1952.github.io/calcmate/sample-size-calculator.html">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='6' fill='%230f766e'/%3E%3Ctext x='16' y='23' font-size='17' font-family='Arial' font-weight='bold' fill='white' text-anchor='middle'%3E%25%3C/text%3E%3C/svg%3E">
+<link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+<header class="site-head"><a class="brand" href="index.html">Calc<span>Mate</span></a></header>
+<main>
+<nav class="crumbs"><a href="index.html">Calculators</a> &rsaquo; Statistics</nav>
+<h1>Sample Size Calculator</h1>
+<p class="lead">How many responses does a survey need? Compute the sample size from margin of error and confidence level.</p>
+<form class="calc" onsubmit="return run(event)">
+<div class="frow"><label for="in_pop">Population size ((blank = very large))</label><input type="number" id="in_pop" step="1"></div>
+<div class="frow"><label for="in_moe">Margin of error (%)</label><input type="number" id="in_moe" value="5" step="any"></div>
+<div class="frow"><label for="in_conf">Confidence level</label><select id="in_conf"><option value="1.645">90%</option><option value="1.96" selected>95%</option><option value="2.576">99%</option></select></div>
+<div class="frow"><label for="in_p">Expected proportion (%)</label><input type="number" id="in_p" value="50" step="any"></div>
+<button type="submit">Calculate</button>
+</form>
+<div id="result"></div>
+<section class="about"><h2>About the Sample Size Calculator</h2><p>For an infinite population: <b>n = z&sup2; &times; p(1&minus;p) / e&sup2;</b>, with z from the confidence level (1.645 for 90%, 1.96 for 95%, 2.576 for 99%) and p the expected proportion (use 50% when unknown, it is the conservative choice). Finite populations apply the correction n/(1+(n&minus;1)/N).</p></section>
+<section class="related"><h2>Related Statistics calculators</h2><p><a href="number-sequence-calculator.html">Number Sequence Calculator</a> &nbsp; <a href="probability-calculator.html">Probability Calculator</a> &nbsp; <a href="standard-deviation-calculator.html">Standard Deviation Calculator</a> &nbsp; <a href="z-score-calculator.html">Z-score Calculator</a></p></section>
+</main>
+<footer><p>CalcMate &mdash; free online calculators. Results are estimates for general information only, not professional advice.</p></footer>
+<script>
+function v(id){var e=document.getElementById('in_'+id); if(!e) return '';
+ if(e.type==='number'){ if(e.value==='') return NaN; return parseFloat(e.value);} return e.value;}
+function err(m){throw new Error(m);}
+function fmt(n,d){d=(d===undefined)?2:d; if(typeof n!=='number'||!isFinite(n)) return '—';
+ return n.toLocaleString('en-US',{minimumFractionDigits:Math.min(d,2),maximumFractionDigits:d});}
+function show(html){document.getElementById('result').innerHTML='<div class="box ok">'+html+'</div>';}
+function showErr(m){document.getElementById('result').innerHTML='<div class="box error">'+m+'</div>';}
+function run(e){e.preventDefault(); try{compute();}catch(ex){ if(ex instanceof Error && ex.message) showErr(ex.message);} return false;}
+
+
+function compute(){
+var pop=v('pop'), e=v('moe')/100, z=parseFloat(v('conf')), p=v('p')/100;
+if(!(e>0&&e<0.5)) err('Margin of error must be between 0% and 50%.');
+if(!(p>0&&p<1)) err('Proportion must be between 0% and 100%.');
+var n0=z*z*p*(1-p)/(e*e);
+var n=n0;
+if(pop&&pop>0) n=n0/(1+(n0-1)/pop);
+show('<p>Required sample size: <b>'+Math.ceil(n)+'</b> responses</p>'+(pop>0?'<p class="small">From a population of '+fmt(pop,0)+' (unadjusted: '+Math.ceil(n0)+').</p>':'<p class="small">Assuming a very large population.</p>'));
+}
+</script>
+</body></html>

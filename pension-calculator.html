@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Pension Calculator | CalcMate</title>
+<meta name="description" content="Pension pot calculator: project retirement savings to your pension date and the income it supports.">
+<link rel="canonical" href="https://plh1952.github.io/calcmate/pension-calculator.html">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='6' fill='%230f766e'/%3E%3Ctext x='16' y='23' font-size='17' font-family='Arial' font-weight='bold' fill='white' text-anchor='middle'%3E%25%3C/text%3E%3C/svg%3E">
+<link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+<header class="site-head"><a class="brand" href="index.html">Calc<span>Mate</span></a></header>
+<main>
+<nav class="crumbs"><a href="index.html">Calculators</a> &rsaquo; Finance</nav>
+<h1>Pension Calculator</h1>
+<p class="lead">Project the size of your pension pot at retirement and the monthly income it could support.</p>
+<form class="calc" onsubmit="return run(event)">
+<div class="frow"><label for="in_age">Current age</label><input type="number" id="in_age" value="35" step="1"></div>
+<div class="frow"><label for="in_retire">Retirement age</label><input type="number" id="in_retire" value="67" step="1"></div>
+<div class="frow"><label for="in_pot">Current pension pot</label><input type="number" id="in_pot" value="50000" step="any"></div>
+<div class="frow"><label for="in_monthly">Monthly contribution</label><input type="number" id="in_monthly" value="400" step="any"></div>
+<div class="frow"><label for="in_growth">Expected annual growth (%)</label><input type="number" id="in_growth" value="6" step="any"></div>
+<button type="submit">Calculate</button>
+</form>
+<div id="result"></div>
+<section class="about"><h2>About the Pension Calculator</h2><p>The pot compounds monthly until your pension date; the income shown applies the <b>4% safe withdrawal rule</b> (withdraw 4% of the pot per year), a common planning heuristic. Real annuity rates vary with age and market conditions.</p><p>Informational only, not financial advice.</p></section>
+<section class="related"><h2>Related Finance calculators</h2><p><a href="amortization-calculator.html">Amortization Calculator</a> &nbsp; <a href="annuity-calculator.html">Annuity Calculator</a> &nbsp; <a href="apr-calculator.html">APR Calculator</a> &nbsp; <a href="auto-lease-calculator.html">Auto Lease Calculator</a> &nbsp; <a href="auto-loan-calculator.html">Auto Loan Calculator</a> &nbsp; <a href="bond-calculator.html">Bond Calculator</a> &nbsp; <a href="compound-interest-calculator.html">Compound Interest Calculator</a> &nbsp; <a href="credit-card-calculator.html">Credit Card Calculator</a></p></section>
+</main>
+<footer><p>CalcMate &mdash; free online calculators. Results are estimates for general information only, not professional advice.</p></footer>
+<script>
+function v(id){var e=document.getElementById('in_'+id); if(!e) return '';
+ if(e.type==='number'){ if(e.value==='') return NaN; return parseFloat(e.value);} return e.value;}
+function err(m){throw new Error(m);}
+function fmt(n,d){d=(d===undefined)?2:d; if(typeof n!=='number'||!isFinite(n)) return '—';
+ return n.toLocaleString('en-US',{minimumFractionDigits:Math.min(d,2),maximumFractionDigits:d});}
+function show(html){document.getElementById('result').innerHTML='<div class="box ok">'+html+'</div>';}
+function showErr(m){document.getElementById('result').innerHTML='<div class="box error">'+m+'</div>';}
+function run(e){e.preventDefault(); try{compute();}catch(ex){ if(ex instanceof Error && ex.message) showErr(ex.message);} return false;}
+
+
+function compute(){
+var a=v('age'), ra=v('retire'), P=v('pot'), c=v('monthly'), r=v('growth')/1200;
+if(!(ra>a)) err('Retirement age must be greater than current age.');
+if(isNaN(P)||P<0) P=0; if(isNaN(c)||c<0) c=0;
+var n=(ra-a)*12;
+var fv=P*Math.pow(1+r,n) + (r===0? c*n : c*(Math.pow(1+r,n)-1)/r);
+show('<p>Pot at age '+ra+': <b>'+fmt(fv)+'</b></p><p>Estimated monthly income (4% rule): <b>'+fmt(fv*0.04/12)+'</b></p><p class="small">Total contributed: '+fmt(P+c*n)+'</p>');
+}
+</script>
+</body></html>

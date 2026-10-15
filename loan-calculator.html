@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Loan Calculator | CalcMate</title>
+<meta name="description" content="General loan payment calculator: monthly payment and total interest for any loan amount, rate and term.">
+<link rel="canonical" href="https://plh1952.github.io/calcmate/loan-calculator.html">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='6' fill='%230f766e'/%3E%3Ctext x='16' y='23' font-size='17' font-family='Arial' font-weight='bold' fill='white' text-anchor='middle'%3E%25%3C/text%3E%3C/svg%3E">
+<link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+<header class="site-head"><a class="brand" href="index.html">Calc<span>Mate</span></a></header>
+<main>
+<nav class="crumbs"><a href="index.html">Calculators</a> &rsaquo; Finance</nav>
+<h1>Loan Calculator</h1>
+<p class="lead">Compute the monthly payment and total interest for any fixed-rate loan.</p>
+<form class="calc" onsubmit="return run(event)">
+<div class="frow"><label for="in_amount">Loan amount</label><input type="number" id="in_amount" value="15000" step="any"></div>
+<div class="frow"><label for="in_rate">Annual rate (%)</label><input type="number" id="in_rate" value="7" step="any"></div>
+<div class="frow"><label for="in_term">Term</label><input type="number" id="in_term" value="5" step="any"></div>
+<div class="frow"><label for="in_unit">Term unit</label><select id="in_unit"><option value="years" selected>Years</option><option value="months">Months</option></select></div>
+<button type="submit">Calculate</button>
+</form>
+<div id="result"></div>
+<section class="about"><h2>About the Loan Calculator</h2><p>Uses the standard amortization formula; the term may be given in months or years. Total interest is the payment times the number of payments minus the amount borrowed.</p><p>Informational only, not financial advice.</p></section>
+<section class="related"><h2>Related Finance calculators</h2><p><a href="amortization-calculator.html">Amortization Calculator</a> &nbsp; <a href="annuity-calculator.html">Annuity Calculator</a> &nbsp; <a href="apr-calculator.html">APR Calculator</a> &nbsp; <a href="auto-lease-calculator.html">Auto Lease Calculator</a> &nbsp; <a href="auto-loan-calculator.html">Auto Loan Calculator</a> &nbsp; <a href="bond-calculator.html">Bond Calculator</a> &nbsp; <a href="compound-interest-calculator.html">Compound Interest Calculator</a> &nbsp; <a href="credit-card-calculator.html">Credit Card Calculator</a></p></section>
+</main>
+<footer><p>CalcMate &mdash; free online calculators. Results are estimates for general information only, not professional advice.</p></footer>
+<script>
+function v(id){var e=document.getElementById('in_'+id); if(!e) return '';
+ if(e.type==='number'){ if(e.value==='') return NaN; return parseFloat(e.value);} return e.value;}
+function err(m){throw new Error(m);}
+function fmt(n,d){d=(d===undefined)?2:d; if(typeof n!=='number'||!isFinite(n)) return '—';
+ return n.toLocaleString('en-US',{minimumFractionDigits:Math.min(d,2),maximumFractionDigits:d});}
+function show(html){document.getElementById('result').innerHTML='<div class="box ok">'+html+'</div>';}
+function showErr(m){document.getElementById('result').innerHTML='<div class="box error">'+m+'</div>';}
+function run(e){e.preventDefault(); try{compute();}catch(ex){ if(ex instanceof Error && ex.message) showErr(ex.message);} return false;}
+
+
+function compute(){
+var P=v('amount'), r=v('rate')/1200;
+var n=v('unit')==='years'? Math.round(v('term')*12) : Math.round(v('term'));
+if(!(P>0)||!(n>0)) err('Enter a positive amount and term.');
+var m=r===0? P/n : P*r/(1-Math.pow(1+r,-n));
+show('<p>Monthly payment: <b>'+fmt(m)+'</b> for '+n+' payments</p><p>Total repaid: <b>'+fmt(m*n)+'</b> &nbsp;|&nbsp; Total interest: <b>'+fmt(m*n-P)+'</b></p>');
+}
+</script>
+</body></html>

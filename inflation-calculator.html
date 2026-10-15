@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Inflation Calculator | CalcMate</title>
+<meta name="description" content="Inflation calculator: the future cost of goods and the shrinking purchasing power of money.">
+<link rel="canonical" href="https://plh1952.github.io/calcmate/inflation-calculator.html">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='6' fill='%230f766e'/%3E%3Ctext x='16' y='23' font-size='17' font-family='Arial' font-weight='bold' fill='white' text-anchor='middle'%3E%25%3C/text%3E%3C/svg%3E">
+<link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+<header class="site-head"><a class="brand" href="index.html">Calc<span>Mate</span></a></header>
+<main>
+<nav class="crumbs"><a href="index.html">Calculators</a> &rsaquo; Finance</nav>
+<h1>Inflation Calculator</h1>
+<p class="lead">See how inflation raises the future price of goods and shrinks what your money will actually buy.</p>
+<form class="calc" onsubmit="return run(event)">
+<div class="frow"><label for="in_amount">Amount today</label><input type="number" id="in_amount" value="100" step="any"></div>
+<div class="frow"><label for="in_rate">Average annual inflation (%)</label><input type="number" id="in_rate" value="3" step="any"></div>
+<div class="frow"><label for="in_years">Years</label><input type="number" id="in_years" value="10" step="1"></div>
+<button type="submit">Calculate</button>
+</form>
+<div id="result"></div>
+<section class="about"><h2>About the Inflation Calculator</h2><p>Future cost = <b>amount &times; (1+i)<sup>t</sup></b>; purchasing power = <b>amount / (1+i)<sup>t</sup></b>. At 3% inflation, prices double roughly every 24 years, and idle cash loses half its real value over the same span.</p><p>Informational only, not financial advice.</p></section>
+<section class="related"><h2>Related Finance calculators</h2><p><a href="amortization-calculator.html">Amortization Calculator</a> &nbsp; <a href="annuity-calculator.html">Annuity Calculator</a> &nbsp; <a href="apr-calculator.html">APR Calculator</a> &nbsp; <a href="auto-lease-calculator.html">Auto Lease Calculator</a> &nbsp; <a href="auto-loan-calculator.html">Auto Loan Calculator</a> &nbsp; <a href="bond-calculator.html">Bond Calculator</a> &nbsp; <a href="compound-interest-calculator.html">Compound Interest Calculator</a> &nbsp; <a href="credit-card-calculator.html">Credit Card Calculator</a></p></section>
+</main>
+<footer><p>CalcMate &mdash; free online calculators. Results are estimates for general information only, not professional advice.</p></footer>
+<script>
+function v(id){var e=document.getElementById('in_'+id); if(!e) return '';
+ if(e.type==='number'){ if(e.value==='') return NaN; return parseFloat(e.value);} return e.value;}
+function err(m){throw new Error(m);}
+function fmt(n,d){d=(d===undefined)?2:d; if(typeof n!=='number'||!isFinite(n)) return '—';
+ return n.toLocaleString('en-US',{minimumFractionDigits:Math.min(d,2),maximumFractionDigits:d});}
+function show(html){document.getElementById('result').innerHTML='<div class="box ok">'+html+'</div>';}
+function showErr(m){document.getElementById('result').innerHTML='<div class="box error">'+m+'</div>';}
+function run(e){e.preventDefault(); try{compute();}catch(ex){ if(ex instanceof Error && ex.message) showErr(ex.message);} return false;}
+
+
+function compute(){
+var a=v('amount'), i=v('rate')/100, t=v('years');
+if(!(a>0)||!(t>0)) err('Enter a positive amount and years.');
+var f=a*Math.pow(1+i,t), p=a/Math.pow(1+i,t);
+show('<p>In '+t+' years, what costs '+fmt(a)+' today will cost <b>'+fmt(f)+'</b>.</p><p>'+fmt(a)+' kept as cash will buy only what <b>'+fmt(p)+'</b> buys today.</p>');
+}
+</script>
+</body></html>

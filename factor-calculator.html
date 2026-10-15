@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Factor Calculator | CalcMate</title>
+<meta name="description" content="Prime factorization calculator: find the prime factors and all factors of any integer.">
+<link rel="canonical" href="https://plh1952.github.io/calcmate/factor-calculator.html">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='6' fill='%230f766e'/%3E%3Ctext x='16' y='23' font-size='17' font-family='Arial' font-weight='bold' fill='white' text-anchor='middle'%3E%25%3C/text%3E%3C/svg%3E">
+<link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+<header class="site-head"><a class="brand" href="index.html">Calc<span>Mate</span></a></header>
+<main>
+<nav class="crumbs"><a href="index.html">Calculators</a> &rsaquo; Math</nav>
+<h1>Factor Calculator</h1>
+<p class="lead">Find the prime factorization and the complete list of factors of any integer.</p>
+<form class="calc" onsubmit="return run(event)">
+<div class="frow"><label for="in_n">Number</label><input type="number" id="in_n" value="60" step="1"></div>
+<button type="submit">Calculate</button>
+</form>
+<div id="result"></div>
+<section class="about"><h2>About the Factor Calculator</h2><p>Prime factors multiply back to the number (60 = 2&sup2; &times; 3 &times; 5). The number of total factors is the product of (exponent + 1) for each prime: 60 has 3&times;2&times;2 = 12 factors.</p></section>
+<section class="related"><h2>Related Math calculators</h2><p><a href="exponent-calculator.html">Exponent Calculator</a> &nbsp; <a href="gcf-calculator.html">Greatest Common Factor Calculator</a> &nbsp; <a href="lcm-calculator.html">Least Common Multiple Calculator</a> &nbsp; <a href="log-calculator.html">Log Calculator</a> &nbsp; <a href="percentage-calculator.html">Percentage Calculator</a> &nbsp; <a href="ratio-calculator.html">Ratio Calculator</a> &nbsp; <a href="root-calculator.html">Root Calculator</a> &nbsp; <a href="rounding-calculator.html">Rounding Calculator</a></p></section>
+</main>
+<footer><p>CalcMate &mdash; free online calculators. Results are estimates for general information only, not professional advice.</p></footer>
+<script>
+function v(id){var e=document.getElementById('in_'+id); if(!e) return '';
+ if(e.type==='number'){ if(e.value==='') return NaN; return parseFloat(e.value);} return e.value;}
+function err(m){throw new Error(m);}
+function fmt(n,d){d=(d===undefined)?2:d; if(typeof n!=='number'||!isFinite(n)) return '—';
+ return n.toLocaleString('en-US',{minimumFractionDigits:Math.min(d,2),maximumFractionDigits:d});}
+function show(html){document.getElementById('result').innerHTML='<div class="box ok">'+html+'</div>';}
+function showErr(m){document.getElementById('result').innerHTML='<div class="box error">'+m+'</div>';}
+function run(e){e.preventDefault(); try{compute();}catch(ex){ if(ex instanceof Error && ex.message) showErr(ex.message);} return false;}
+
+
+function compute(){
+var n=Math.round(v('n'));
+if(!(n>1&&n<1e9)) err('Enter an integer between 2 and 1,000,000,000.');
+var m=n, parts=[], factors=[];
+for(var p=2;p*p<=m;p++){var c=0; while(m%p===0){m/=p;c++;} if(c>0){parts.push(p+(c>1?'^'+c:'')); for(var q=0;q<c;q++)factors.push(p);}}
+if(m>1){parts.push(m); factors.push(m);}
+var all=[], out=[];
+for(var d=1;d*d<=n;d++) if(n%d===0){out.push(d); var dd=n/d; if(dd!==d) all.push(dd);}
+out=out.concat(all.reverse());
+show('<p>Prime factorization: <b>'+parts.join(' × ')+'</b></p><p>Prime factors: ['+factors.join(', ')+']</p><p>All '+out.length+' factors: '+out.join(', ')+'</p>');
+}
+</script>
+</body></html>

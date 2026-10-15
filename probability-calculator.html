@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Probability Calculator | CalcMate</title>
+<meta name="description" content="Probability calculator for two events: union, intersection, conditional probability and complements.">
+<link rel="canonical" href="https://plh1952.github.io/calcmate/probability-calculator.html">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='6' fill='%230f766e'/%3E%3Ctext x='16' y='23' font-size='17' font-family='Arial' font-weight='bold' fill='white' text-anchor='middle'%3E%25%3C/text%3E%3C/svg%3E">
+<link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+<header class="site-head"><a class="brand" href="index.html">Calc<span>Mate</span></a></header>
+<main>
+<nav class="crumbs"><a href="index.html">Calculators</a> &rsaquo; Statistics</nav>
+<h1>Probability Calculator</h1>
+<p class="lead">Compute the union, intersection, and conditional probabilities of two events A and B.</p>
+<form class="calc" onsubmit="return run(event)">
+<div class="frow"><label for="in_pa">P(A) (%)</label><input type="number" id="in_pa" value="50" step="any"></div>
+<div class="frow"><label for="in_pb">P(B) (%)</label><input type="number" id="in_pb" value="40" step="any"></div>
+<div class="frow"><label for="in_pab">P(A and B) (% (leave blank if independent))</label><input type="number" id="in_pab" step="any"></div>
+<button type="submit">Calculate</button>
+</form>
+<div id="result"></div>
+<section class="about"><h2>About the Probability Calculator</h2><p>Union P(A or B) = P(A) + P(B) &minus; P(A and B). If independent, P(A and B) = P(A)&times;P(B). If you already know the joint probability P(A and B), enter it and independence is not assumed.</p></section>
+<section class="related"><h2>Related Statistics calculators</h2><p><a href="number-sequence-calculator.html">Number Sequence Calculator</a> &nbsp; <a href="sample-size-calculator.html">Sample Size Calculator</a> &nbsp; <a href="standard-deviation-calculator.html">Standard Deviation Calculator</a> &nbsp; <a href="z-score-calculator.html">Z-score Calculator</a></p></section>
+</main>
+<footer><p>CalcMate &mdash; free online calculators. Results are estimates for general information only, not professional advice.</p></footer>
+<script>
+function v(id){var e=document.getElementById('in_'+id); if(!e) return '';
+ if(e.type==='number'){ if(e.value==='') return NaN; return parseFloat(e.value);} return e.value;}
+function err(m){throw new Error(m);}
+function fmt(n,d){d=(d===undefined)?2:d; if(typeof n!=='number'||!isFinite(n)) return '—';
+ return n.toLocaleString('en-US',{minimumFractionDigits:Math.min(d,2),maximumFractionDigits:d});}
+function show(html){document.getElementById('result').innerHTML='<div class="box ok">'+html+'</div>';}
+function showErr(m){document.getElementById('result').innerHTML='<div class="box error">'+m+'</div>';}
+function run(e){e.preventDefault(); try{compute();}catch(ex){ if(ex instanceof Error && ex.message) showErr(ex.message);} return false;}
+
+
+function compute(){
+var pa=v('pa')/100, pb=v('pb')/100, pabIn=v('pab');
+if(!(pa>=0&&pa<=1)||!(pb>=0&&pb<=1)) err('Probabilities must be between 0% and 100%.');
+var pab = (pabIn===''||isNaN(pabIn))? pa*pb : pabIn/100;
+if(!(pab>=0&&pab<=Math.min(pa,pb))) err('P(A and B) must be between 0% and the smaller of P(A) and P(B).');
+var union=pa+pb-pab;
+show('<p>P(A and B): <b>'+fmt(pab*100,2)+'%</b></p><p>P(A or B): <b>'+fmt(union*100,2)+'%</b></p><p>P(not A and not B): '+fmt((1-union)*100,2)+'%</p><p>P(A | B): <b>'+(pb>0?fmt(pab/pb*100,2)+'%':'—')+'</b> &nbsp;|&nbsp; P(B | A): <b>'+(pa>0?fmt(pab/pa*100,2)+'%':'—')+'</b></p>');
+}
+</script>
+</body></html>

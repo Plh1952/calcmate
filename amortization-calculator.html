@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Amortization Calculator | CalcMate</title>
+<meta name="description" content="Free amortization calculator: monthly payment, total interest, and a month-by-month payment schedule for any loan.">
+<link rel="canonical" href="https://plh1952.github.io/calcmate/amortization-calculator.html">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='6' fill='%230f766e'/%3E%3Ctext x='16' y='23' font-size='17' font-family='Arial' font-weight='bold' fill='white' text-anchor='middle'%3E%25%3C/text%3E%3C/svg%3E">
+<link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+<header class="site-head"><a class="brand" href="index.html">Calc<span>Mate</span></a></header>
+<main>
+<nav class="crumbs"><a href="index.html">Calculators</a> &rsaquo; Finance</nav>
+<h1>Amortization Calculator</h1>
+<p class="lead">Calculate the monthly payment, total interest, and full payoff schedule of an amortized loan such as a mortgage or car loan.</p>
+<form class="calc" onsubmit="return run(event)">
+<div class="frow"><label for="in_amount">Loan amount</label><input type="number" id="in_amount" value="300000" step="any"></div>
+<div class="frow"><label for="in_rate">Annual interest rate (%)</label><input type="number" id="in_rate" value="6" step="any"></div>
+<div class="frow"><label for="in_years">Loan term (years)</label><input type="number" id="in_years" value="30" step="1"></div>
+<button type="submit">Calculate</button>
+</form>
+<div id="result"></div>
+<section class="about"><h2>About the Amortization Calculator</h2><p>The monthly payment uses the standard amortization formula: <b>PMT = P &times; i / (1 &minus; (1+i)<sup>&minus;n</sup>)</b>, where P is the loan amount, i the monthly rate and n the number of payments. Each payment pays the month's interest first; the remainder reduces the principal, so the interest share shrinks every month.</p><p>This calculator is for informational purposes only and is not financial advice.</p></section>
+<section class="related"><h2>Related Finance calculators</h2><p><a href="annuity-calculator.html">Annuity Calculator</a> &nbsp; <a href="apr-calculator.html">APR Calculator</a> &nbsp; <a href="auto-lease-calculator.html">Auto Lease Calculator</a> &nbsp; <a href="auto-loan-calculator.html">Auto Loan Calculator</a> &nbsp; <a href="bond-calculator.html">Bond Calculator</a> &nbsp; <a href="compound-interest-calculator.html">Compound Interest Calculator</a> &nbsp; <a href="credit-card-calculator.html">Credit Card Calculator</a> &nbsp; <a href="future-value-calculator.html">Future Value Calculator</a></p></section>
+</main>
+<footer><p>CalcMate &mdash; free online calculators. Results are estimates for general information only, not professional advice.</p></footer>
+<script>
+function v(id){var e=document.getElementById('in_'+id); if(!e) return '';
+ if(e.type==='number'){ if(e.value==='') return NaN; return parseFloat(e.value);} return e.value;}
+function err(m){throw new Error(m);}
+function fmt(n,d){d=(d===undefined)?2:d; if(typeof n!=='number'||!isFinite(n)) return '—';
+ return n.toLocaleString('en-US',{minimumFractionDigits:Math.min(d,2),maximumFractionDigits:d});}
+function show(html){document.getElementById('result').innerHTML='<div class="box ok">'+html+'</div>';}
+function showErr(m){document.getElementById('result').innerHTML='<div class="box error">'+m+'</div>';}
+function run(e){e.preventDefault(); try{compute();}catch(ex){ if(ex instanceof Error && ex.message) showErr(ex.message);} return false;}
+
+
+function compute(){
+var P=v('amount'), i=v('rate')/1200, n=v('years')*12;
+if(!(P>0)||!(n>0)) err('Enter a positive loan amount and term.');
+if(i<0) err('Rate cannot be negative.');
+var m=i===0? P/n : P*i/(1-Math.pow(1+i,-n));
+var bal=P, rows='', ti=0;
+for(var k=1;k<=n;k++){var ip=bal*i, pr=m-ip; if(k>n-1||bal<m){pr=bal; var mm=pr+ip;} var mm2=Math.min(m,ip+bal); ti+=ip; bal-=Math.min(m,ip+bal);}
+bal=P; ti=0;
+for(var k=1;k<=12;k++){var ip=bal*i; var pay=Math.min(m,ip+bal); var pr=pay-ip; bal-=pr; ti+=ip;
+ rows+='<tr><td>'+k+'</td><td>'+fmt(pay)+'</td><td>'+fmt(pr)+'</td><td>'+fmt(ip)+'</td><td>'+fmt(Math.max(bal,0))+'</td></tr>';}
+show('<p>Monthly payment: <b>'+fmt(m)+'</b></p><p>Total paid: <b>'+fmt(m*n)+'</b> &nbsp;|&nbsp; Total interest: <b>'+fmt(m*n-P)+'</b></p><table class="tbl"><tr><th>Month</th><th>Payment</th><th>Principal</th><th>Interest</th><th>Balance</th></tr>'+rows+'</table><p class="small">First 12 payments shown.</p>');
+}
+</script>
+</body></html>

@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Period Calculator | CalcMate</title>
+<meta name="description" content="Period tracker calculator: predict your next period dates from your last period and cycle length.">
+<link rel="canonical" href="https://plh1952.github.io/calcmate/period-calculator.html">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='6' fill='%230f766e'/%3E%3Ctext x='16' y='23' font-size='17' font-family='Arial' font-weight='bold' fill='white' text-anchor='middle'%3E%25%3C/text%3E%3C/svg%3E">
+<link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+<header class="site-head"><a class="brand" href="index.html">Calc<span>Mate</span></a></header>
+<main>
+<nav class="crumbs"><a href="index.html">Calculators</a> &rsaquo; Pregnancy</nav>
+<h1>Period Calculator</h1>
+<p class="lead">Predict when your next periods will arrive, based on your last period start and average cycle length.</p>
+<form class="calc" onsubmit="return run(event)">
+<div class="frow"><label for="in_lmp">First day of last period</label><input type="date" id="in_lmp"></div>
+<div class="frow"><label for="in_cycle">Average cycle length (days)</label><input type="number" id="in_cycle" value="28" step="1"></div>
+<div class="frow"><label for="in_count">Show next (periods)</label><input type="number" id="in_count" value="6" step="1"></div>
+<button type="submit">Calculate</button>
+</form>
+<div id="result"></div>
+<section class="about"><h2>About the Period Calculator</h2><p>The prediction simply repeats your average cycle length. Real cycles vary by a few days; a difference of more than 7-9 days between cycles is worth discussing with a doctor.</p><p>Informational only, not medical advice.</p></section>
+<section class="related"><h2>Related Pregnancy calculators</h2><p><a href="due-date-calculator.html">Due Date Calculator</a> &nbsp; <a href="ovulation-calculator.html">Ovulation Calculator</a> &nbsp; <a href="pregnancy-week-by-week-calculator.html">Pregnancy Calculator</a> &nbsp; <a href="pregnancy-weight-gain-calculator.html">Pregnancy Weight Gain Calculator</a></p></section>
+</main>
+<footer><p>CalcMate &mdash; free online calculators. Results are estimates for general information only, not professional advice.</p></footer>
+<script>
+function v(id){var e=document.getElementById('in_'+id); if(!e) return '';
+ if(e.type==='number'){ if(e.value==='') return NaN; return parseFloat(e.value);} return e.value;}
+function err(m){throw new Error(m);}
+function fmt(n,d){d=(d===undefined)?2:d; if(typeof n!=='number'||!isFinite(n)) return '—';
+ return n.toLocaleString('en-US',{minimumFractionDigits:Math.min(d,2),maximumFractionDigits:d});}
+function show(html){document.getElementById('result').innerHTML='<div class="box ok">'+html+'</div>';}
+function showErr(m){document.getElementById('result').innerHTML='<div class="box error">'+m+'</div>';}
+function run(e){e.preventDefault(); try{compute();}catch(ex){ if(ex instanceof Error && ex.message) showErr(ex.message);} return false;}
+
+
+function compute(){
+var lmp=v('lmp'); if(!lmp) err('Please enter the first day of your last period.');
+var cyc=v('cycle'); if(isNaN(cyc)||cyc<20||cyc>45) err('Cycle length should be between 20 and 45 days.');
+var cnt=v('count'); if(cnt<1||cnt>12) cnt=6;
+var L=new Date(lmp); var rows='';
+for(var k=1;k<=cnt;k++){var d=new Date(L.getTime()+cyc*k*864e5);
+ rows+='<tr><td>'+k+'</td><td>'+d.toDateString()+'</td><td>'+(k+1)+' days bleeding typical</td></tr>';}
+show('<table class="tbl"><tr><th>#</th><th>Expected start</th><th>Note</th></tr>'+rows+'</table>');
+}
+</script>
+</body></html>

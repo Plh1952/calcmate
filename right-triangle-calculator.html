@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Right Triangle Calculator | CalcMate</title>
+<meta name="description" content="Right triangle solver: all sides and angles from two legs, a leg and the hypotenuse, or a side and an angle.">
+<link rel="canonical" href="https://plh1952.github.io/calcmate/right-triangle-calculator.html">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='6' fill='%230f766e'/%3E%3Ctext x='16' y='23' font-size='17' font-family='Arial' font-weight='bold' fill='white' text-anchor='middle'%3E%25%3C/text%3E%3C/svg%3E">
+<link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+<header class="site-head"><a class="brand" href="index.html">Calc<span>Mate</span></a></header>
+<main>
+<nav class="crumbs"><a href="index.html">Calculators</a> &rsaquo; Geometry</nav>
+<h1>Right Triangle Calculator</h1>
+<p class="lead">Solve a complete right triangle: enter two legs, a leg plus the hypotenuse, or the hypotenuse plus an angle.</p>
+<form class="calc" onsubmit="return run(event)">
+<div class="frow"><label for="in_a">Leg a</label><input type="number" id="in_a" value="3" step="any"></div>
+<div class="frow"><label for="in_b">Leg b</label><input type="number" id="in_b" value="4" step="any"></div>
+<div class="frow"><label for="in_c">Hypotenuse c</label><input type="number" id="in_c" step="any"></div>
+<div class="frow"><label for="in_A">Angle A (degrees opposite a (optional))</label><input type="number" id="in_A" step="any"></div>
+<div class="frow"><label for="in_B">Angle B (degrees opposite b (optional))</label><input type="number" id="in_B" step="any"></div>
+<button type="submit">Calculate</button>
+</form>
+<div id="result"></div>
+<section class="about"><h2>About the Right Triangle Calculator</h2><p>Cases handled: two legs (c = &radic;(a&sup2;+b&sup2;), angles via arctangent); a leg and the hypotenuse (Pythagoras); the hypotenuse and an angle (sine/cosine). Angles A and B add to 90&deg;.</p></section>
+<section class="related"><h2>Related Geometry calculators</h2><p><a href="area-calculator.html">Area Calculator</a> &nbsp; <a href="circle-calculator.html">Circle Calculator</a> &nbsp; <a href="distance-calculator.html">Distance Calculator</a> &nbsp; <a href="pythagorean-theorem-calculator.html">Pythagorean Theorem Calculator</a> &nbsp; <a href="slope-calculator.html">Slope Calculator</a> &nbsp; <a href="surface-area-calculator.html">Surface Area Calculator</a> &nbsp; <a href="triangle-calculator.html">Triangle Calculator</a> &nbsp; <a href="volume-calculator.html">Volume Calculator</a></p></section>
+</main>
+<footer><p>CalcMate &mdash; free online calculators. Results are estimates for general information only, not professional advice.</p></footer>
+<script>
+function v(id){var e=document.getElementById('in_'+id); if(!e) return '';
+ if(e.type==='number'){ if(e.value==='') return NaN; return parseFloat(e.value);} return e.value;}
+function err(m){throw new Error(m);}
+function fmt(n,d){d=(d===undefined)?2:d; if(typeof n!=='number'||!isFinite(n)) return '—';
+ return n.toLocaleString('en-US',{minimumFractionDigits:Math.min(d,2),maximumFractionDigits:d});}
+function show(html){document.getElementById('result').innerHTML='<div class="box ok">'+html+'</div>';}
+function showErr(m){document.getElementById('result').innerHTML='<div class="box error">'+m+'</div>';}
+function run(e){e.preventDefault(); try{compute();}catch(ex){ if(ex instanceof Error && ex.message) showErr(ex.message);} return false;}
+
+
+function compute(){
+var a=v('a'), b=v('b'), c=v('c'), A=v('A');
+function has(x){return x!==''&&!isNaN(x)&&x>0;}
+function fin(a2,b2,c2,A2){var B2=90-A2;
+ show('<p>a = <b>'+fmt(a2,6)+'</b> &nbsp; b = <b>'+fmt(b2,6)+'</b> &nbsp; c = <b>'+fmt(c2,6)+'</b></p><p>Angle A = <b>'+fmt(A2,3)+'&deg;</b> &nbsp; Angle B = <b>'+fmt(B2,3)+'&deg;</b> &nbsp; Angle C = 90&deg;</p><p>Area = '+fmt(a2*b2/2,6)+'</p>');}
+if(has(a)&&has(b)) fin(a,b,Math.sqrt(a*a+b*b),Math.atan2(a,b)*180/Math.PI);
+else if(has(a)&&has(c)){if(c<=a) err('The hypotenuse must exceed leg a.'); fin(a,Math.sqrt(c*c-a*a),c,Math.asin(a/c)*180/Math.PI);}
+else if(has(b)&&has(c)){if(c<=b) err('The hypotenuse must exceed leg b.'); fin(Math.sqrt(c*c-b*b),b,c,Math.acos(b/c)*180/Math.PI);}
+else if(has(c)&&has(A)&&A>0&&A<90){var a2=c*Math.sin(A*Math.PI/180), b2=c*Math.cos(A*Math.PI/180); fin(a2,b2,c,A);}
+else if(has(a)&&has(A)&&A>0&&A<90){var b2=a/Math.tan(A*Math.PI/180); fin(a,b2,Math.sqrt(a*a+b2*b2),A);}
+else if(has(b)&&has(A)&&A>0&&A<90){var a2=b*Math.tan(A*Math.PI/180); fin(a2,b,Math.sqrt(a2*a2+b*b),A);}
+else err('Enter two legs, a leg and the hypotenuse, or the hypotenuse plus an angle (0-90 degrees).');
+}
+</script>
+</body></html>

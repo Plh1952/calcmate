@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Income Tax Calculator | CalcMate</title>
+<meta name="description" content="US federal income tax estimate for 2026: standard deduction, bracket-by-bracket tax, marginal and effective rate.">
+<link rel="canonical" href="https://calculators.whereismyschool.org/income-tax-calculator.html">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='6' fill='%230f766e'/%3E%3Ctext x='16' y='23' font-size='17' font-family='Arial' font-weight='bold' fill='white' text-anchor='middle'%3E%25%3C/text%3E%3C/svg%3E">
+<link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+<header class="site-head"><a class="brand" href="index.html">Calc<span>Mate</span></a></header>
+<main>
+<nav class="crumbs"><a href="index.html">Calculators</a> &rsaquo; Finance</nav>
+<h1>Federal Income Tax Calculator (2026)</h1>
+<p class="lead">Estimate your 2026 US federal income tax: standard deduction, tax by bracket, marginal and effective rates.</p>
+<form class="calc" onsubmit="return run(event)">
+<div class="frow"><label for="in_income">Gross annual income ($)</label><input type="number" id="in_income" value="65000" step="any"></div>
+<div class="frow"><label for="in_status">Filing status</label><select id="in_status"><option value="single" selected>Single</option><option value="mfj">Married filing jointly</option></select></div>
+<button type="submit">Calculate</button>
+</form>
+<div id="result"></div>
+<section class="about"><h2>About the Income Tax Calculator</h2><p>Uses the official IRS tax year 2026 brackets (Revenue Procedure 2025-32): 10, 12, 22, 24, 32, 35 and 37%, with the standard deduction of $16,100 (single) or $32,200 (married filing jointly). Estimate only: it does not replace a real tax return and excludes payroll taxes, credits, itemized deductions and state income tax.</p></section>
+<section class="related"><h2>Related Finance calculators</h2><p><a href="amortization-calculator.html">Amortization Calculator</a> &nbsp; <a href="annuity-calculator.html">Annuity Calculator</a> &nbsp; <a href="apr-calculator.html">APR Calculator</a> &nbsp; <a href="auto-lease-calculator.html">Auto Lease Calculator</a> &nbsp; <a href="auto-loan-calculator.html">Auto Loan Calculator</a> &nbsp; <a href="bond-calculator.html">Bond Calculator</a> &nbsp; <a href="compound-interest-calculator.html">Compound Interest Calculator</a> &nbsp; <a href="credit-card-calculator.html">Credit Card Calculator</a></p></section>
+</main>
+<footer><p>CalcMate &mdash; free online calculators, part of the <a href="https://whereismyschool.org">Whereismyschool</a> family. Results are estimates for general information only, not professional advice.</p></footer>
+<script>
+function v(id){var e=document.getElementById('in_'+id); if(!e) return '';
+ if(e.type==='number'){ if(e.value==='') return NaN; return parseFloat(e.value);} return e.value;}
+function err(m){throw new Error(m);}
+function fmt(n,d){d=(d===undefined)?2:d; if(typeof n!=='number'||!isFinite(n)) return '—';
+ return n.toLocaleString('en-US',{minimumFractionDigits:Math.min(d,2),maximumFractionDigits:d});}
+function show(html){document.getElementById('result').innerHTML='<div class="box ok">'+html+'</div>';}
+function showErr(m){document.getElementById('result').innerHTML='<div class="box error">'+m+'</div>';}
+function run(e){e.preventDefault(); try{compute();}catch(ex){ if(ex instanceof Error && ex.message) showErr(ex.message);} return false;}
+
+
+function compute(){
+var inc=v('income'), st=v('status');
+if(!(inc>=0)) err('Enter a non-negative income.');
+var brackets = st==='single'
+ ? [[12400,.10],[50400,.12],[105700,.22],[201775,.24],[256225,.32],[640600,.35],[1e12,.37]]
+ : [[24800,.10],[100800,.12],[211400,.22],[403550,.24],[512450,.32],[768700,.35],[1e12,.37]];
+var std = st==='single'?16100:32200;
+var taxable=Math.max(0, inc-std);
+var tax=0, prev=0, marginal=0;
+for(var i=0;i<brackets.length;i++){
+ var top=Math.min(taxable, brackets[i][0]);
+ if(top>prev){ tax+=(top-prev)*brackets[i][1]; marginal=brackets[i][1]; prev=top; }
+ if(taxable<=brackets[i][0]) break;
+}
+var eff = inc>0 ? tax/inc*100 : 0;
+show('<p>Standard deduction ('+(st==='single'?'single':'married filing jointly')+'): <b>'+fmt(std,0)+'</b></p><p>Taxable income: <b>'+fmt(taxable)+'</b></p><p>Estimated federal tax: <b>'+fmt(tax)+'</b></p><p>Marginal bracket: <b>'+(marginal*100)+'%</b> | Effective rate: <b>'+fmt(eff,1)+'%</b></p><p>After-tax income: <b>'+fmt(inc-tax)+'</b></p><p class="small">Estimate only, based on IRS 2026 brackets (Rev. Proc. 2025-32). Excludes payroll tax, credits and state tax.</p>');
+}
+</script>
+</body></html>

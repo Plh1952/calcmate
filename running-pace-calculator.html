@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Running Pace Calculator | CalcMate</title>
+<meta name="description" content="Running pace calculator: pace per km and per mile, speed, from distance and finish time.">
+<link rel="canonical" href="https://calculators.whereismyschool.org/running-pace-calculator.html">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='6' fill='%230f766e'/%3E%3Ctext x='16' y='23' font-size='17' font-family='Arial' font-weight='bold' fill='white' text-anchor='middle'%3E%25%3C/text%3E%3C/svg%3E">
+<link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+<header class="site-head"><a class="brand" href="index.html">Calc<span>Mate</span></a></header>
+<main>
+<nav class="crumbs"><a href="index.html">Calculators</a> &rsaquo; Health</nav>
+<h1>Running Pace Calculator</h1>
+<p class="lead">Calculate your running pace per kilometer and per mile from a distance and a finish time.</p>
+<form class="calc" onsubmit="return run(event)">
+<div class="frow"><label for="in_dist">Distance (km)</label><input type="number" id="in_dist" value="5" step="any"></div>
+<div class="frow"><label for="in_hh">Time: hours</label><input type="number" id="in_hh" value="0" step="1"></div>
+<div class="frow"><label for="in_mm">Minutes</label><input type="number" id="in_mm" value="25" step="1"></div>
+<div class="frow"><label for="in_ss">Seconds</label><input type="number" id="in_ss" value="0" step="1"></div>
+<button type="submit">Calculate</button>
+</form>
+<div id="result"></div>
+<section class="about"><h2>About the Running Pace Calculator</h2><p>Pace = time / distance. Race benchmarks for recreational runners: 5K around 25-30 min, 10K around 55-65 min, half marathon around 2:00-2:30. Consistent negative splits (second half faster) are the classic racing strategy.</section>
+<section class="related"><h2>Related Health calculators</h2><p><a href="bmi-calculator.html">BMI Calculator</a> &nbsp; <a href="body-fat-calculator.html">Body Fat Calculator</a> &nbsp; <a href="calorie-calculator.html">Calorie Calculator</a> &nbsp; <a href="ideal-weight-calculator.html">Ideal Weight Calculator</a> &nbsp; <a href="water-intake-calculator.html">Water Intake Calculator</a> &nbsp; <a href="macro-calculator.html">Macro Calculator</a> &nbsp; <a href="sleep-calculator.html">Sleep Calculator</a> &nbsp; <a href="bmr-calculator.html">BMR Calculator</a></p></section>
+</main>
+<footer><p>CalcMate &mdash; free online calculators, part of the <a href="https://whereismyschool.org">Whereismyschool</a> family. Results are estimates for general information only, not professional advice.</p></footer>
+<script>
+function v(id){var e=document.getElementById('in_'+id); if(!e) return '';
+ if(e.type==='number'){ if(e.value==='') return NaN; return parseFloat(e.value);} return e.value;}
+function err(m){throw new Error(m);}
+function fmt(n,d){d=(d===undefined)?2:d; if(typeof n!=='number'||!isFinite(n)) return '—';
+ return n.toLocaleString('en-US',{minimumFractionDigits:Math.min(d,2),maximumFractionDigits:d});}
+function show(html){document.getElementById('result').innerHTML='<div class="box ok">'+html+'</div>';}
+function showErr(m){document.getElementById('result').innerHTML='<div class="box error">'+m+'</div>';}
+function run(e){e.preventDefault(); try{compute();}catch(ex){ if(ex instanceof Error && ex.message) showErr(ex.message);} return false;}
+
+
+function compute(){
+var d=v('dist'), h=Math.floor(v('hh'))||0, m=Math.floor(v('mm'))||0, s=Math.floor(v('ss'))||0;
+if(!(d>0)) err('Enter a positive distance.');
+if(h<0||m<0||s<0||m>59||s>59) err('Enter a valid time.');
+var total=h*3600+m*60+s;
+if(total===0) err('Enter your finish time.');
+var secPerKm=total/d;
+function f2(x){return Math.floor(x)+':'+(Math.round((x%1)*60)<10?'0':'')+Math.round((x%1)*60);}
+show('<p>Pace: <b>'+f2(secPerKm/60)+' /km</b> = '+f2(secPerKm*1.60934/60)+' /mile</p><p>Speed: <b>'+fmt(3600/secPerKm,2)+' km/h</b> ('+fmt(3600/secPerKm*0.621371,2)+' mph)</p><p class="small">At this pace: 10K in '+f2(secPerKm*10/60)+', half marathon in '+f2(secPerKm*21.0975/60)+', marathon in '+f2(secPerKm*42.195/60)+'.</p>');
+}
+</script>
+</body></html>

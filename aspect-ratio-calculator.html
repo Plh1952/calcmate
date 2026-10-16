@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Aspect Ratio Calculator | CalcMate</title>
+<meta name="description" content="Aspect ratio calculator: scale width and height while keeping proportions, with common ratios.">
+<link rel="canonical" href="https://calculators.whereismyschool.org/aspect-ratio-calculator.html">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='6' fill='%230f766e'/%3E%3Ctext x='16' y='23' font-size='17' font-family='Arial' font-weight='bold' fill='white' text-anchor='middle'%3E%25%3C/text%3E%3C/svg%3E">
+<link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+<header class="site-head"><a class="brand" href="index.html">Calc<span>Mate</span></a></header>
+<main>
+<nav class="crumbs"><a href="index.html">Calculators</a> &rsaquo; Math</nav>
+<h1>Aspect Ratio Calculator</h1>
+<p class="lead">Scale an image or screen proportionally: enter the original size and one new dimension.</p>
+<form class="calc" onsubmit="return run(event)">
+<div class="frow"><label for="in_w1">Original width (px)</label><input type="number" id="in_w1" value="1920" step="any"></div>
+<div class="frow"><label for="in_h1">Original height (px)</label><input type="number" id="in_h1" value="1080" step="any"></div>
+<div class="frow"><label for="in_w2">New width (px (leave blank if you know the height))</label><input type="number" id="in_w2" value="1280" step="any"></div>
+<div class="frow"><label for="in_h2">New height (px (leave blank if you know the width))</label><input type="number" id="in_h2" step="any"></div>
+<button type="submit">Calculate</button>
+</form>
+<div id="result"></div>
+<section class="about"><h2>About the Aspect Ratio Calculator</h2><p>Aspect ratio is width divided by height. Scaling keeps the ratio constant: new height = new width &times; (orig height / orig width). Common ratios: 16:9 (HD video), 4:3 (classic TV), 3:2 and 1:1. A 1920&times;1080 screen is 16:9.</section>
+<section class="related"><h2>Related Math calculators</h2><p><a href="exponent-calculator.html">Exponent Calculator</a> &nbsp; <a href="factor-calculator.html">Factor Calculator</a> &nbsp; <a href="gcf-calculator.html">Greatest Common Factor Calculator</a> &nbsp; <a href="lcm-calculator.html">Least Common Multiple Calculator</a> &nbsp; <a href="log-calculator.html">Log Calculator</a> &nbsp; <a href="percentage-calculator.html">Percentage Calculator</a> &nbsp; <a href="ratio-calculator.html">Ratio Calculator</a> &nbsp; <a href="root-calculator.html">Root Calculator</a></p></section>
+</main>
+<footer><p>CalcMate &mdash; free online calculators, part of the <a href="https://whereismyschool.org">Whereismyschool</a> family. Results are estimates for general information only, not professional advice.</p></footer>
+<script>
+function v(id){var e=document.getElementById('in_'+id); if(!e) return '';
+ if(e.type==='number'){ if(e.value==='') return NaN; return parseFloat(e.value);} return e.value;}
+function err(m){throw new Error(m);}
+function fmt(n,d){d=(d===undefined)?2:d; if(typeof n!=='number'||!isFinite(n)) return '—';
+ return n.toLocaleString('en-US',{minimumFractionDigits:Math.min(d,2),maximumFractionDigits:d});}
+function show(html){document.getElementById('result').innerHTML='<div class="box ok">'+html+'</div>';}
+function showErr(m){document.getElementById('result').innerHTML='<div class="box error">'+m+'</div>';}
+function run(e){e.preventDefault(); try{compute();}catch(ex){ if(ex instanceof Error && ex.message) showErr(ex.message);} return false;}
+
+
+function compute(){
+var w1=v('w1'), h1=v('h1'), w2=v('w2'), h2=v('h2');
+if(!(w1>0&&h1>0)) err('Enter positive original dimensions.');
+function gcd2(x,y){x=Math.round(x);y=Math.round(y);while(y){var t=x%y;x=y;y=t;}return x;}
+var g=gcd2(w1,h1)||1;
+var out='<p>Aspect ratio: <b>'+Math.round(w1/g)+':'+Math.round(h1/g)+'</b> ('+fmt(w1/h1,4)+':1)</p>';
+var nw=w2, nh=h2;
+if(nw>0&&!(nh>0)){ nh=nw*h1/w1; out+='<p>New size: <b>'+fmt(nw)+' x '+fmt(nh,1)+'</b> (height computed)</p>'; }
+else if(nh>0&&!(nw>0)){ nw=nh*w1/h1; out+='<p>New size: <b>'+fmt(nw,1)+' x '+fmt(nh)+'</b> (width computed)</p>'; }
+else if(nw>0&&nh>0){ out+='<p>New size: <b>'+fmt(nw)+' x '+fmt(nh)+'</b>, scale factor '+fmt(nw/w1,3)+'; ratio '+(Math.abs(nw/nh-w1/h1)<0.01?'preserved':'NOT preserved')+'</p>'; }
+else{ out+='<p class="small">Enter a new width or a new height to compute the other.</p>'; }
+show(out);
+}
+</script>
+</body></html>

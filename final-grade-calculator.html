@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Final Grade Calculator | CalcMate</title>
+<meta name="description" content="Final grade calculator: what you need on the final exam to reach your target course grade.">
+<link rel="canonical" href="https://calculators.whereismyschool.org/final-grade-calculator.html">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='6' fill='%230f766e'/%3E%3Ctext x='16' y='23' font-size='17' font-family='Arial' font-weight='bold' fill='white' text-anchor='middle'%3E%25%3C/text%3E%3C/svg%3E">
+<link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+<header class="site-head"><a class="brand" href="index.html">Calc<span>Mate</span></a></header>
+<main>
+<nav class="crumbs"><a href="index.html">Calculators</a> &rsaquo; School</nav>
+<h1>Final Grade Calculator</h1>
+<p class="lead">Find the minimum score you need on the final exam to finish the course with your target grade.</p>
+<form class="calc" onsubmit="return run(event)">
+<div class="frow"><label for="in_current">Current grade (%)</label><input type="number" id="in_current" value="85" step="any"></div>
+<div class="frow"><label for="in_target">Target course grade (%)</label><input type="number" id="in_target" value="90" step="any"></div>
+<div class="frow"><label for="in_weight">Final exam weight (% of course grade)</label><input type="number" id="in_weight" value="30" step="any"></div>
+<button type="submit">Calculate</button>
+</form>
+<div id="result"></div>
+<section class="about"><h2>About the Final Grade Calculator</h2><p>Needed = (target - current &times; (100 - final weight)/100) / (final weight/100). The final only controls the share of the course grade equal to its weight; the rest is already locked in by your current average.</p></section>
+<section class="related"><h2>Related School calculators</h2><p><a href="grade-calculator.html">Grade Calculator</a> &nbsp; <a href="gpa-calculator.html">GPA Calculator</a> &nbsp; <a href="fraction-calculator.html">Fraction Calculator</a> &nbsp; <a href="quadratic-equation-calculator.html">Quadratic Equation Calculator</a> &nbsp; <a href="combination-calculator.html">Combination Calculator</a></p></section>
+</main>
+<footer><p>CalcMate &mdash; free online calculators, part of the <a href="https://whereismyschool.org">Whereismyschool</a> family. Results are estimates for general information only, not professional advice.</p></footer>
+<script>
+function v(id){var e=document.getElementById('in_'+id); if(!e) return '';
+ if(e.type==='number'){ if(e.value==='') return NaN; return parseFloat(e.value);} return e.value;}
+function err(m){throw new Error(m);}
+function fmt(n,d){d=(d===undefined)?2:d; if(typeof n!=='number'||!isFinite(n)) return '—';
+ return n.toLocaleString('en-US',{minimumFractionDigits:Math.min(d,2),maximumFractionDigits:d});}
+function show(html){document.getElementById('result').innerHTML='<div class="box ok">'+html+'</div>';}
+function showErr(m){document.getElementById('result').innerHTML='<div class="box error">'+m+'</div>';}
+function run(e){e.preventDefault(); try{compute();}catch(ex){ if(ex instanceof Error && ex.message) showErr(ex.message);} return false;}
+
+
+function compute(){
+var cur=v('current'), tgt=v('target'), w=v('weight');
+if(cur<0||cur>100) err('Current grade must be between 0 and 100%.');
+if(tgt<0||tgt>100) err('Target grade must be between 0 and 100%.');
+if(!(w>0&&w<=100)) err('Final weight must be between 0 and 100%.');
+var needed=(tgt - cur*(100-w)/100)/(w/100);
+if(needed>100){ show('<p>You would need <b>'+fmt(needed,1)+'%</b> on the final.</p><p class="small">That is above 100%: this target is out of reach. Ask about extra credit.</p>'); }
+else if(needed<=0){ show('<p>You need <b>'+fmt(Math.max(0,needed),1)+'%</b> on the final.</p><p class="small">You have already secured your target grade. The final cannot hurt more than '+fmt(w,0)+'% though.</p>'); }
+else{ show('<p>You need at least <b>'+fmt(needed,1)+'%</b> on the final to finish at '+fmt(tgt,1)+'%.</p>'); }
+}
+</script>
+</body></html>

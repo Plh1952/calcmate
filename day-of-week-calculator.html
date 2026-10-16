@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Day of Week Calculator | CalcMate</title>
+<meta name="description" content="What day of the week: find the weekday for any past or future date, plus the day of the year.">
+<link rel="canonical" href="https://calculators.whereismyschool.org/day-of-week-calculator.html">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='6' fill='%230f766e'/%3E%3Ctext x='16' y='23' font-size='17' font-family='Arial' font-weight='bold' fill='white' text-anchor='middle'%3E%25%3C/text%3E%3C/svg%3E">
+<link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+<header class="site-head"><a class="brand" href="index.html">Calc<span>Mate</span></a></header>
+<main>
+<nav class="crumbs"><a href="index.html">Calculators</a> &rsaquo; Date &amp; Time</nav>
+<h1>Day of Week Calculator</h1>
+<p class="lead">Find the day of the week for any date, past or future, plus its day number in the year.</p>
+<form class="calc" onsubmit="return run(event)">
+<div class="frow"><label for="in_date">Date</label><input type="date" id="in_date"></div>
+<button type="submit">Calculate</button>
+</form>
+<div id="result"></div>
+<section class="about"><h2>About the Day of Week Calculator</h2><p>The weekday repeats exactly every 400 years in the Gregorian calendar. This tool uses the built-in calendar rules, so leap years are handled automatically.</section>
+<section class="related"><h2>Related Date &amp; Time calculators</h2><p><a href="age-calculator.html">Age Calculator</a> &nbsp; <a href="date-difference-calculator.html">Date Difference Calculator</a> &nbsp; <a href="time-card-calculator.html">Time Card Calculator</a> &nbsp; <a href="world-time-converter.html">World Time Converter</a> &nbsp; <a href="days-until-calculator.html">Days Until Calculator</a> &nbsp; <a href="time-duration-calculator.html">Time Duration Calculator</a></p></section>
+</main>
+<footer><p>CalcMate &mdash; free online calculators, part of the <a href="https://whereismyschool.org">Whereismyschool</a> family. Results are estimates for general information only, not professional advice.</p></footer>
+<script>
+function v(id){var e=document.getElementById('in_'+id); if(!e) return '';
+ if(e.type==='number'){ if(e.value==='') return NaN; return parseFloat(e.value);} return e.value;}
+function err(m){throw new Error(m);}
+function fmt(n,d){d=(d===undefined)?2:d; if(typeof n!=='number'||!isFinite(n)) return '—';
+ return n.toLocaleString('en-US',{minimumFractionDigits:Math.min(d,2),maximumFractionDigits:d});}
+function show(html){document.getElementById('result').innerHTML='<div class="box ok">'+html+'</div>';}
+function showErr(m){document.getElementById('result').innerHTML='<div class="box error">'+m+'</div>';}
+function run(e){e.preventDefault(); try{compute();}catch(ex){ if(ex instanceof Error && ex.message) showErr(ex.message);} return false;}
+
+
+function compute(){
+var ds=v('date'); if(!ds) err('Enter a date.');
+var p=ds.split('-'); var y=+p[0], mo=+p[1], d=+p[2];
+var t=Date.UTC(y,mo-1,d);
+if(isNaN(t)) err('Enter a valid date.');
+var wd=['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'][new Date(t).getUTCDay()];
+var start=Date.UTC(y,0,1);
+var doy=Math.round((t-start)/864e5)+1;
+var now=new Date(); var today=Date.UTC(now.getUTCFullYear(),now.getUTCMonth(),now.getUTCDate());
+var diff=Math.round((t-today)/864e5);
+var rel=diff===0?'That is today.':diff>0?'That is in '+diff+' days.':'That was '+(-diff)+' days ago.';
+show('<p>'+ds+' is a <b>'+wd+'</b>.</p><p>Day '+doy+' of the year.</p><p class="small">'+rel+'</p>');
+}
+</script>
+</body></html>

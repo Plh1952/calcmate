@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Time Duration Calculator | CalcMate</title>
+<meta name="description" content="Add or subtract times: hours and minutes duration calculator for tasks and schedules.">
+<link rel="canonical" href="https://calculators.whereismyschool.org/time-duration-calculator.html">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='6' fill='%230f766e'/%3E%3Ctext x='16' y='23' font-size='17' font-family='Arial' font-weight='bold' fill='white' text-anchor='middle'%3E%25%3C/text%3E%3C/svg%3E">
+<link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+<header class="site-head"><a class="brand" href="index.html">Calc<span>Mate</span></a></header>
+<main>
+<nav class="crumbs"><a href="index.html">Calculators</a> &rsaquo; Date &amp; Time</nav>
+<h1>Time Duration Calculator</h1>
+<p class="lead">Add or subtract two durations in hours and minutes.</p>
+<form class="calc" onsubmit="return run(event)">
+<div class="frow"><label for="in_h1">First duration: hours</label><input type="number" id="in_h1" value="2" step="1"></div>
+<div class="frow"><label for="in_m1">Minutes</label><input type="number" id="in_m1" value="45" step="1"></div>
+<div class="frow"><label for="in_op">Operation</label><select id="in_op"><option value="+" selected>add</option><option value="-">subtract</option></select></div>
+<div class="frow"><label for="in_h2">Second duration: hours</label><input type="number" id="in_h2" value="1" step="1"></div>
+<div class="frow"><label for="in_m2">Minutes</label><input type="number" id="in_m2" value="30" step="1"></div>
+<button type="submit">Calculate</button>
+</form>
+<div id="result"></div>
+<section class="about"><h2>About the Time Duration Calculator</h2><p>Durations are converted to minutes, combined, then shown both as h:mm and as decimal hours. Decimal is what spreadsheets and payroll expect: 1 hour 45 minutes = 1.75.</section>
+<section class="related"><h2>Related Date &amp; Time calculators</h2><p><a href="age-calculator.html">Age Calculator</a> &nbsp; <a href="date-difference-calculator.html">Date Difference Calculator</a> &nbsp; <a href="time-card-calculator.html">Time Card Calculator</a> &nbsp; <a href="world-time-converter.html">World Time Converter</a> &nbsp; <a href="day-of-week-calculator.html">Day of Week Calculator</a> &nbsp; <a href="days-until-calculator.html">Days Until Calculator</a></p></section>
+</main>
+<footer><p>CalcMate &mdash; free online calculators, part of the <a href="https://whereismyschool.org">Whereismyschool</a> family. Results are estimates for general information only, not professional advice.</p></footer>
+<script>
+function v(id){var e=document.getElementById('in_'+id); if(!e) return '';
+ if(e.type==='number'){ if(e.value==='') return NaN; return parseFloat(e.value);} return e.value;}
+function err(m){throw new Error(m);}
+function fmt(n,d){d=(d===undefined)?2:d; if(typeof n!=='number'||!isFinite(n)) return '—';
+ return n.toLocaleString('en-US',{minimumFractionDigits:Math.min(d,2),maximumFractionDigits:d});}
+function show(html){document.getElementById('result').innerHTML='<div class="box ok">'+html+'</div>';}
+function showErr(m){document.getElementById('result').innerHTML='<div class="box error">'+m+'</div>';}
+function run(e){e.preventDefault(); try{compute();}catch(ex){ if(ex instanceof Error && ex.message) showErr(ex.message);} return false;}
+
+
+function compute(){
+var h1=Math.floor(v('h1'))||0, m1=Math.floor(v('m1'))||0, h2=Math.floor(v('h2'))||0, m2=Math.floor(v('m2'))||0;
+if(m1<0||m2<0||h1<0||h2<0) err('Durations cannot be negative.');
+var op=v('op');
+var total=(h1*60+m1)+(op==='+'?(h2*60+m2):-(h2*60+m2));
+var sign=total<0?'-':''; var abs=Math.abs(total);
+var hh=Math.floor(abs/60), mm=abs%60;
+show('<p>Result: <b>'+sign+hh+'h '+mm+'m</b> ('+sign+hh+':'+(mm<10?'0':'')+mm+')</p><p>Decimal hours: <b>'+fmt(total/60,2)+'</b></p>');
+}
+</script>
+</body></html>

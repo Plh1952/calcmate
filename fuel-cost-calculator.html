@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Fuel Cost Calculator | CalcMate</title>
+<meta name="description" content="Fuel cost calculator for a trip, in metric (L/100km) or US (MPG) units.">
+<link rel="canonical" href="https://calculators.whereismyschool.org/fuel-cost-calculator.html">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='6' fill='%230f766e'/%3E%3Ctext x='16' y='23' font-size='17' font-family='Arial' font-weight='bold' fill='white' text-anchor='middle'%3E%25%3C/text%3E%3C/svg%3E">
+<link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+<header class="site-head"><a class="brand" href="index.html">Calc<span>Mate</span></a></header>
+<main>
+<nav class="crumbs"><a href="index.html">Calculators</a> &rsaquo; Finance</nav>
+<h1>Fuel Cost Calculator</h1>
+<p class="lead">Estimate the fuel cost of a trip from the distance, your vehicle's consumption, and the fuel price.</p>
+<form class="calc" onsubmit="return run(event)">
+<div class="frow"><label for="in_units">Units</label><select id="in_units"><option value="metric" selected>Metric (km, L/100km, price/L)</option><option value="us">US (miles, MPG, price/gallon)</option></select></div>
+<div class="frow"><label for="in_dist">Distance (km or miles)</label><input type="number" id="in_dist" value="500" step="any"></div>
+<div class="frow"><label for="in_eff">Consumption (L/100km or MPG)</label><input type="number" id="in_eff" value="7.5" step="any"></div>
+<div class="frow"><label for="in_price">Fuel price (per liter or gallon)</label><input type="number" id="in_price" value="1.65" step="any"></div>
+<button type="submit">Calculate</button>
+</form>
+<div id="result"></div>
+<section class="about"><h2>About the Fuel Cost Calculator</h2><p>Metric: fuel = distance &times; L/100km / 100. US: fuel = distance / MPG. Multiply by the price per liter or per gallon. Lower consumption saves twice: the same trip costs less and emits less.</p></section>
+<section class="related"><h2>Related Finance calculators</h2><p><a href="amortization-calculator.html">Amortization Calculator</a> &nbsp; <a href="annuity-calculator.html">Annuity Calculator</a> &nbsp; <a href="apr-calculator.html">APR Calculator</a> &nbsp; <a href="auto-lease-calculator.html">Auto Lease Calculator</a> &nbsp; <a href="auto-loan-calculator.html">Auto Loan Calculator</a> &nbsp; <a href="bond-calculator.html">Bond Calculator</a> &nbsp; <a href="compound-interest-calculator.html">Compound Interest Calculator</a> &nbsp; <a href="credit-card-calculator.html">Credit Card Calculator</a></p></section>
+</main>
+<footer><p>CalcMate &mdash; free online calculators, part of the <a href="https://whereismyschool.org">Whereismyschool</a> family. Results are estimates for general information only, not professional advice.</p></footer>
+<script>
+function v(id){var e=document.getElementById('in_'+id); if(!e) return '';
+ if(e.type==='number'){ if(e.value==='') return NaN; return parseFloat(e.value);} return e.value;}
+function err(m){throw new Error(m);}
+function fmt(n,d){d=(d===undefined)?2:d; if(typeof n!=='number'||!isFinite(n)) return '—';
+ return n.toLocaleString('en-US',{minimumFractionDigits:Math.min(d,2),maximumFractionDigits:d});}
+function show(html){document.getElementById('result').innerHTML='<div class="box ok">'+html+'</div>';}
+function showErr(m){document.getElementById('result').innerHTML='<div class="box error">'+m+'</div>';}
+function run(e){e.preventDefault(); try{compute();}catch(ex){ if(ex instanceof Error && ex.message) showErr(ex.message);} return false;}
+
+
+function compute(){
+var u=v('units'), d=v('dist'), e=v('eff'), p=v('price');
+if(!(d>0)) err('Enter a positive distance.');
+if(!(e>0)) err('Consumption must be positive.');
+if(!(p>0)) err('Enter a positive fuel price.');
+var fuel, cost, unit;
+if(u==='metric'){fuel=d*e/100; unit='liters';}
+else{fuel=d/e; unit='gallons';}
+cost=fuel*p;
+show('<p>Fuel needed: <b>'+fmt(fuel,2)+' '+unit+'</b></p><p>Estimated cost: <b>'+fmt(cost)+'</b></p><p class="small">Cost per '+(u==='metric'?'km':'mile')+': '+fmt(cost/d,3)+'</p>');
+}
+</script>
+</body></html>

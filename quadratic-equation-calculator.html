@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Quadratic Equation Calculator | CalcMate</title>
+<meta name="description" content="Solve ax2 + bx + c = 0: discriminant, real or complex roots, and the vertex.">
+<link rel="canonical" href="https://calculators.whereismyschool.org/quadratic-equation-calculator.html">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='6' fill='%230f766e'/%3E%3Ctext x='16' y='23' font-size='17' font-family='Arial' font-weight='bold' fill='white' text-anchor='middle'%3E%25%3C/text%3E%3C/svg%3E">
+<link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+<header class="site-head"><a class="brand" href="index.html">Calc<span>Mate</span></a></header>
+<main>
+<nav class="crumbs"><a href="index.html">Calculators</a> &rsaquo; School</nav>
+<h1>Quadratic Equation Calculator</h1>
+<p class="lead">Solve any quadratic equation ax&amp;sup2; + bx + c = 0: discriminant, both roots (real or complex), and the vertex.</p>
+<form class="calc" onsubmit="return run(event)">
+<div class="frow"><label for="in_a">a (x squared coefficient)</label><input type="number" id="in_a" value="1" step="any"></div>
+<div class="frow"><label for="in_b">b</label><input type="number" id="in_b" value="-3" step="any"></div>
+<div class="frow"><label for="in_c">c</label><input type="number" id="in_c" value="2" step="any"></div>
+<button type="submit">Calculate</button>
+</form>
+<div id="result"></div>
+<section class="about"><h2>About the Quadratic Equation Calculator</h2><p>The quadratic formula: <b>x = (&minus;b &plusmn; &radic;(b&sup2;&minus;4ac)) / 2a</b>. The discriminant D = b&sup2;&minus;4ac decides the outcome: D &gt; 0 gives two real roots, D = 0 a double root, D &lt; 0 two complex conjugate roots.</p></section>
+<section class="related"><h2>Related School calculators</h2><p><a href="grade-calculator.html">Grade Calculator</a> &nbsp; <a href="gpa-calculator.html">GPA Calculator</a> &nbsp; <a href="fraction-calculator.html">Fraction Calculator</a> &nbsp; <a href="combination-calculator.html">Combination Calculator</a></p></section>
+</main>
+<footer><p>CalcMate &mdash; free online calculators, part of the <a href="https://whereismyschool.org">Whereismyschool</a> family. Results are estimates for general information only, not professional advice.</p></footer>
+<script>
+function v(id){var e=document.getElementById('in_'+id); if(!e) return '';
+ if(e.type==='number'){ if(e.value==='') return NaN; return parseFloat(e.value);} return e.value;}
+function err(m){throw new Error(m);}
+function fmt(n,d){d=(d===undefined)?2:d; if(typeof n!=='number'||!isFinite(n)) return '—';
+ return n.toLocaleString('en-US',{minimumFractionDigits:Math.min(d,2),maximumFractionDigits:d});}
+function show(html){document.getElementById('result').innerHTML='<div class="box ok">'+html+'</div>';}
+function showErr(m){document.getElementById('result').innerHTML='<div class="box error">'+m+'</div>';}
+function run(e){e.preventDefault(); try{compute();}catch(ex){ if(ex instanceof Error && ex.message) showErr(ex.message);} return false;}
+
+
+function compute(){
+var a=v('a'), b=v('b'), c=v('c');
+if(!a) err('a cannot be 0 (that would not be a quadratic equation).');
+if([a,b,c].some(isNaN)) err('Enter a, b and c.');
+var D=b*b-4*a*c;
+var out='<p>Discriminant D = b&sup2; - 4ac = <b>'+fmt(D,6)+'</b></p>';
+if(D>1e-12){var r=Math.sqrt(D);
+ out+='<p>x1 = <b>'+fmt((-b+r)/(2*a),8)+'</b></p><p>x2 = <b>'+fmt((-b-r)/(2*a),8)+'</b></p><p>Two distinct real roots.</p>';}
+else if(D>=-1e-12){out+='<p>Double root: x = <b>'+fmt(-b/(2*a),8)+'</b></p>';}
+else{var re=-b/(2*a), im=Math.sqrt(-D)/(2*a);
+ out+='<p>x1 = <b>'+fmt(re,6)+' + '+fmt(im,6)+'i</b></p><p>x2 = <b>'+fmt(re,6)+' - '+fmt(im,6)+'i</b></p><p>Complex conjugate roots.</p>';}
+var vx=-b/(2*a), vy=a*vx*vx+b*vx+c;
+out+='<p>Vertex: ('+fmt(vx,6)+', '+fmt(vy,6)+') '+(a>0?'(minimum)':'(maximum)')+'</p>';
+show(out);
+}
+</script>
+</body></html>

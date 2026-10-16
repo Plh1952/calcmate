@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>World Time Converter | CalcMate</title>
+<meta name="description" content="World time converter: what time is it in Paris, London, Tokyo or 30 other cities for any time you choose.">
+<link rel="canonical" href="https://calculators.whereismyschool.org/world-time-converter.html">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='6' fill='%230f766e'/%3E%3Ctext x='16' y='23' font-size='17' font-family='Arial' font-weight='bold' fill='white' text-anchor='middle'%3E%25%3C/text%3E%3C/svg%3E">
+<link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+<header class="site-head"><a class="brand" href="index.html">Calc<span>Mate</span></a></header>
+<main>
+<nav class="crumbs"><a href="index.html">Calculators</a> &rsaquo; Date &amp; Time</nav>
+<h1>World Time Converter</h1>
+<p class="lead">Set a time anywhere in the world and see the corresponding time in Paris, London, Tokyo, New York and 30 other destinations at once.</p>
+<form class="calc" onsubmit="return run(event)">
+<div class="frow"><label for="in_src">From city</label><select id="in_src"><option value="America/Los_Angeles" selected>Los Angeles</option><option value="America/Denver">Denver</option><option value="America/Chicago">Chicago</option><option value="America/New_York">New York</option><option value="America/Toronto">Toronto</option><option value="America/Mexico_City">Mexico City</option><option value="America/Sao_Paulo">Sao Paulo</option><option value="Pacific/Honolulu">Honolulu</option><option value="Europe/London">London</option><option value="Europe/Paris">Paris</option><option value="Europe/Berlin">Berlin</option><option value="Europe/Madrid">Madrid</option><option value="Europe/Rome">Rome</option><option value="Europe/Amsterdam">Amsterdam</option><option value="Europe/Stockholm">Stockholm</option><option value="Europe/Moscow">Moscow</option><option value="Europe/Istanbul">Istanbul</option><option value="Africa/Cairo">Cairo</option><option value="Africa/Lagos">Lagos</option><option value="Africa/Johannesburg">Johannesburg</option><option value="Asia/Dubai">Dubai</option><option value="Asia/Kolkata">Mumbai</option><option value="Asia/Bangkok">Bangkok</option><option value="Asia/Ho_Chi_Minh">Ho Chi Minh City</option><option value="Asia/Singapore">Singapore</option><option value="Asia/Hong_Kong">Hong Kong</option><option value="Asia/Shanghai">Beijing / Shanghai</option><option value="Asia/Tokyo">Tokyo</option><option value="Asia/Seoul">Seoul</option><option value="Australia/Sydney">Sydney</option><option value="Pacific/Auckland">Auckland</option></select></div>
+<div class="frow"><label for="in_date">Date ((blank = today))</label><input type="date" id="in_date"></div>
+<div class="frow"><label for="in_time">Time</label><input type="time" id="in_time" value="13:00"></div>
+<button type="submit">Calculate</button>
+</form>
+<div id="result"></div>
+<section class="about"><h2>About the World Time Converter</h2><p>The Earth is divided into IANA time zones, each with its own offset and daylight saving rules. This converter applies the exact rules in force on the date you choose, so summer and winter are handled automatically. Fun fact: when it is 1 pm in Los Angeles, it is 10 pm in Paris the same day.</p></section>
+<section class="related"><h2>Related Date &amp; Time calculators</h2><p><a href="age-calculator.html">Age Calculator</a> &nbsp; <a href="date-difference-calculator.html">Date Difference Calculator</a> &nbsp; <a href="time-card-calculator.html">Time Card Calculator</a></p></section>
+</main>
+<footer><p>CalcMate &mdash; free online calculators, part of the <a href="https://whereismyschool.org">Whereismyschool</a> family. Results are estimates for general information only, not professional advice.</p></footer>
+<script>
+function v(id){var e=document.getElementById('in_'+id); if(!e) return '';
+ if(e.type==='number'){ if(e.value==='') return NaN; return parseFloat(e.value);} return e.value;}
+function err(m){throw new Error(m);}
+function fmt(n,d){d=(d===undefined)?2:d; if(typeof n!=='number'||!isFinite(n)) return '—';
+ return n.toLocaleString('en-US',{minimumFractionDigits:Math.min(d,2),maximumFractionDigits:d});}
+function show(html){document.getElementById('result').innerHTML='<div class="box ok">'+html+'</div>';}
+function showErr(m){document.getElementById('result').innerHTML='<div class="box error">'+m+'</div>';}
+function run(e){e.preventDefault(); try{compute();}catch(ex){ if(ex instanceof Error && ex.message) showErr(ex.message);} return false;}
+
+
+function compute(){
+var src=v('src'); if(!src) err('Choose a source city.');
+var tstr=v('time'); if(!tstr) err('Enter a time.');
+var hh=parseInt(tstr.substr(0,2),10), mm=parseInt(tstr.substr(3,2),10);
+if(isNaN(hh)||isNaN(mm)||hh>23||mm>59) err('Enter the time as HH:MM.');
+var now=new Date(), y, mo, d;
+var ds=v('date');
+if(ds){var p=ds.split('-'); y=+p[0]; mo=+p[1]; d=+p[2];}
+else{y=now.getUTCFullYear(); mo=now.getUTCMonth()+1; d=now.getUTCDate();}
+function off(tz, t){
+ var dtf=new Intl.DateTimeFormat('en-US',{timeZone:tz,hour12:false,year:'numeric',month:'2-digit',day:'2-digit',hour:'2-digit',minute:'2-digit',second:'2-digit'});
+ var o={}; dtf.formatToParts(new Date(t)).forEach(function(p){o[p.type]=p.value;});
+ var H=o.hour==='24'?0:+o.hour;
+ return Date.UTC(+o.year, +o.month-1, +o.day, H, +o.minute, +o.second) - t;
+}
+var naive=Date.UTC(y,mo-1,d,hh,mm);
+var t1=naive-off(src,naive); var t=naive-off(src,t1);
+var cities=[["Los Angeles","America/Los_Angeles"],["Denver","America/Denver"],["Chicago","America/Chicago"],["New York","America/New_York"],["Toronto","America/Toronto"],["Mexico City","America/Mexico_City"],["Sao Paulo","America/Sao_Paulo"],["Honolulu","Pacific/Honolulu"],["London","Europe/London"],["Paris","Europe/Paris"],["Berlin","Europe/Berlin"],["Madrid","Europe/Madrid"],["Rome","Europe/Rome"],["Amsterdam","Europe/Amsterdam"],["Stockholm","Europe/Stockholm"],["Moscow","Europe/Moscow"],["Istanbul","Europe/Istanbul"],["Cairo","Africa/Cairo"],["Lagos","Africa/Lagos"],["Johannesburg","Africa/Johannesburg"],["Dubai","Asia/Dubai"],["Mumbai","Asia/Kolkata"],["Bangkok","Asia/Bangkok"],["Ho Chi Minh City","Asia/Ho_Chi_Minh"],["Singapore","Asia/Singapore"],["Hong Kong","Asia/Hong_Kong"],["Beijing / Shanghai","Asia/Shanghai"],["Tokyo","Asia/Tokyo"],["Seoul","Asia/Seoul"],["Sydney","Australia/Sydney"],["Auckland","Pacific/Auckland"]];
+var rows='';
+var srcDay=new Intl.DateTimeFormat('en-US',{timeZone:src,month:'short',day:'numeric'}).format(new Date(t)).replace(',','');
+for(var i=0;i<cities.length;i++){
+ var tz=cities[i][1];
+ try{
+  var f=new Intl.DateTimeFormat('en-US',{timeZone:tz,hour:'numeric',minute:'2-digit',hour12:true});
+  var day=new Intl.DateTimeFormat('en-US',{timeZone:tz,month:'short',day:'numeric'}).format(new Date(t)).replace(',','');
+  var tag=day===srcDay?'':' ('+(day<srcDay?'previous day':'next day')+')';
+  rows+='<tr><td>'+cities[i][0]+'</td><td><b>'+f.format(new Date(t))+tag+'</b></td></tr>';
+ }catch(ex){}
+}
+var srcName='?';
+for(var i=0;i<cities.length;i++) if(cities[i][1]===src) srcName=cities[i][0];
+show('<p class="small">When it is <b>'+tstr+'</b> in <b>'+srcName+'</b> ('+srcDay+'):</p><table class="tbl"><tr><th>City</th><th>Local time</th></tr>'+rows+'</table>');
+}
+</script>
+</body></html>

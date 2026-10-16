@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Paint Calculator | CalcMate</title>
+<meta name="description" content="Paint calculator: liters of paint needed for a room from dimensions, doors, windows and coats.">
+<link rel="canonical" href="https://calculators.whereismyschool.org/paint-calculator.html">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='6' fill='%230f766e'/%3E%3Ctext x='16' y='23' font-size='17' font-family='Arial' font-weight='bold' fill='white' text-anchor='middle'%3E%25%3C/text%3E%3C/svg%3E">
+<link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+<header class="site-head"><a class="brand" href="index.html">Calc<span>Mate</span></a></header>
+<main>
+<nav class="crumbs"><a href="index.html">Calculators</a> &rsaquo; Home</nav>
+<h1>Paint Calculator</h1>
+<p class="lead">Estimate how much paint a room needs: walls and ceiling, minus doors and windows, times the coats.</p>
+<form class="calc" onsubmit="return run(event)">
+<div class="frow"><label for="in_len">Room length (m)</label><input type="number" id="in_len" value="5" step="any"></div>
+<div class="frow"><label for="in_wid">Room width (m)</label><input type="number" id="in_wid" value="4" step="any"></div>
+<div class="frow"><label for="in_h">Wall height (m)</label><input type="number" id="in_h" value="2.5" step="any"></div>
+<div class="frow"><label for="in_doors">Doors</label><input type="number" id="in_doors" value="1" step="1"></div>
+<div class="frow"><label for="in_win">Windows</label><input type="number" id="in_win" value="2" step="1"></div>
+<div class="frow"><label for="in_coats">Coats of paint</label><input type="number" id="in_coats" value="2" step="1"></div>
+<div class="frow"><label for="in_cov">Coverage (m2 per liter)</label><input type="number" id="in_cov" value="10" step="any"></div>
+<button type="submit">Calculate</button>
+</form>
+<div id="result"></div>
+<section class="about"><h2>About the Paint Calculator</h2><p>Paintable area = 2 &times; (length + width) &times; height, plus the ceiling, minus about 2 m&sup2; per door and 1.5 m&sup2; per window. One liter covers roughly 10 m&sup2; per coat; porous or dark surfaces need more.</p></section>
+<section class="related"><h2>Related Home calculators</h2><p><a href="concrete-calculator.html">Concrete Calculator</a></p></section>
+</main>
+<footer><p>CalcMate &mdash; free online calculators, part of the <a href="https://whereismyschool.org">Whereismyschool</a> family. Results are estimates for general information only, not professional advice.</p></footer>
+<script>
+function v(id){var e=document.getElementById('in_'+id); if(!e) return '';
+ if(e.type==='number'){ if(e.value==='') return NaN; return parseFloat(e.value);} return e.value;}
+function err(m){throw new Error(m);}
+function fmt(n,d){d=(d===undefined)?2:d; if(typeof n!=='number'||!isFinite(n)) return '—';
+ return n.toLocaleString('en-US',{minimumFractionDigits:Math.min(d,2),maximumFractionDigits:d});}
+function show(html){document.getElementById('result').innerHTML='<div class="box ok">'+html+'</div>';}
+function showErr(m){document.getElementById('result').innerHTML='<div class="box error">'+m+'</div>';}
+function run(e){e.preventDefault(); try{compute();}catch(ex){ if(ex instanceof Error && ex.message) showErr(ex.message);} return false;}
+
+
+function compute(){
+var l=v('len'), w=v('wid'), h=v('h'), nd=v('doors'), nw=v('win'), c=Math.round(v('coats')), cov=v('cov');
+if(!(l>0&&w>0&&h>0)) err('Enter positive room dimensions.');
+if(isNaN(nd)||nd<0) nd=0; if(isNaN(nw)||nw<0) nw=0;
+if(!(c>=1&&c<=5)) c=2;
+if(!(cov>0)) cov=10;
+var area=(2*(l+w)*h + l*w - nd*2 - nw*1.5)*c;
+var liters=area/cov;
+show('<p>Paintable area (x'+c+' coats): <b>'+fmt(area,1)+' m&sup2;</b></p><p>Paint needed: <b>'+fmt(liters,2)+' liters</b> ('+fmt(liters/3.785,2)+' gallons)</p><p class="small">Two coats on a porous surface can need up to a third more.</p>');
+}
+</script>
+</body></html>

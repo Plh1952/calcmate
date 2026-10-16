@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Age Calculator | CalcMate</title>
+<meta name="description" content="Age calculator: exact age in years, months and days from date of birth, plus next birthday countdown.">
+<link rel="canonical" href="https://calculators.whereismyschool.org/age-calculator.html">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='6' fill='%230f766e'/%3E%3Ctext x='16' y='23' font-size='17' font-family='Arial' font-weight='bold' fill='white' text-anchor='middle'%3E%25%3C/text%3E%3C/svg%3E">
+<link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+<header class="site-head"><a class="brand" href="index.html">Calc<span>Mate</span></a></header>
+<main>
+<nav class="crumbs"><a href="index.html">Calculators</a> &rsaquo; Date &amp; Time</nav>
+<h1>Age Calculator</h1>
+<p class="lead">Find an exact age in years, months, and days from a date of birth, plus the countdown to the next birthday.</p>
+<form class="calc" onsubmit="return run(event)">
+<div class="frow"><label for="in_dob">Date of birth</label><input type="date" id="in_dob"></div>
+<button type="submit">Calculate</button>
+</form>
+<div id="result"></div>
+<section class="about"><h2>About the Age Calculator</h2><p>Age counts full years first, then full months, then days, the same way birthdays actually work. The total-days figure uses UTC dates, and the weekday shown is the day of the week the person was born.</p></section>
+<section class="related"><h2>Related Date &amp; Time calculators</h2><p><a href="date-difference-calculator.html">Date Difference Calculator</a> &nbsp; <a href="time-card-calculator.html">Time Card Calculator</a> &nbsp; <a href="world-time-converter.html">World Time Converter</a></p></section>
+</main>
+<footer><p>CalcMate &mdash; free online calculators, part of the <a href="https://whereismyschool.org">Whereismyschool</a> family. Results are estimates for general information only, not professional advice.</p></footer>
+<script>
+function v(id){var e=document.getElementById('in_'+id); if(!e) return '';
+ if(e.type==='number'){ if(e.value==='') return NaN; return parseFloat(e.value);} return e.value;}
+function err(m){throw new Error(m);}
+function fmt(n,d){d=(d===undefined)?2:d; if(typeof n!=='number'||!isFinite(n)) return '—';
+ return n.toLocaleString('en-US',{minimumFractionDigits:Math.min(d,2),maximumFractionDigits:d});}
+function show(html){document.getElementById('result').innerHTML='<div class="box ok">'+html+'</div>';}
+function showErr(m){document.getElementById('result').innerHTML='<div class="box error">'+m+'</div>';}
+function run(e){e.preventDefault(); try{compute();}catch(ex){ if(ex instanceof Error && ex.message) showErr(ex.message);} return false;}
+
+
+function compute(){
+var dob=v('dob'); if(!dob) err('Enter a date of birth.');
+var p=dob.split('-'); var bd=Date.UTC(+p[0],+p[1]-1,+p[2]);
+var now=new Date(); var td=Date.UTC(now.getUTCFullYear(),now.getUTCMonth(),now.getUTCDate());
+if(bd>td) err('The date of birth is in the future.');
+var y2=now.getUTCFullYear(),m2=now.getUTCMonth(),d2=now.getUTCDate();
+var ageY=y2-(+p[0]), ageM=m2-(+p[1]-1), ageD=d2-(+p[2]);
+if(ageD<0){ageM--; var pm=Date.UTC(y2,m2,0); ageD+=new Date(pm).getUTCDate();}
+if(ageM<0){ageY--; ageM+=12;}
+var total=Math.floor((td-bd)/864e5);
+var nextY=y2 + (((m2>p[1]-1)||(m2===(p[1]-1)&&d2>=(+p[2])))?1:0);
+var next=Date.UTC(nextY,+p[1]-1,+p[2]);
+var toBd=Math.round((next-td)/864e5);
+var wd=['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'][new Date(bd).getUTCDay()];
+show('<p>Age: <b>'+ageY+' years, '+ageM+' months, '+ageD+' days</b></p><p>Total days lived: <b>'+fmt(total)+'</b> ('+fmt(total/365.25,2)+' years)</p><p>Next birthday in: <b>'+(toBd===0?'Today is the birthday!':toBd+' days')+'</b></p><p>Born on a: <b>'+wd+'</b></p>');
+}
+</script>
+</body></html>

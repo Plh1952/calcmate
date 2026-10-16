@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Grade Calculator | CalcMate</title>
+<meta name="description" content="Weighted grade calculator: course average from scores and weights, with letter grade.">
+<link rel="canonical" href="https://calculators.whereismyschool.org/grade-calculator.html">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='6' fill='%230f766e'/%3E%3Ctext x='16' y='23' font-size='17' font-family='Arial' font-weight='bold' fill='white' text-anchor='middle'%3E%25%3C/text%3E%3C/svg%3E">
+<link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+<header class="site-head"><a class="brand" href="index.html">Calc<span>Mate</span></a></header>
+<main>
+<nav class="crumbs"><a href="index.html">Calculators</a> &rsaquo; School</nav>
+<h1>Grade Calculator</h1>
+<p class="lead">Compute your course grade: enter each score and its weight, and get the weighted average plus letter grade.</p>
+<form class="calc" onsubmit="return run(event)">
+<div class="frow"><label for="in_s1">Score 1 (%)</label><input type="number" id="in_s1" value="90" step="any"></div>
+<div class="frow"><label for="in_w1">Weight 1 (% (blank = equal))</label><input type="number" id="in_w1" value="20" step="any"></div>
+<div class="frow"><label for="in_s2">Score 2 (%)</label><input type="number" id="in_s2" value="85" step="any"></div>
+<div class="frow"><label for="in_w2">Weight 2 (%)</label><input type="number" id="in_w2" value="20" step="any"></div>
+<div class="frow"><label for="in_s3">Score 3 (%)</label><input type="number" id="in_s3" value="78" step="any"></div>
+<div class="frow"><label for="in_w3">Weight 3 (%)</label><input type="number" id="in_w3" value="25" step="any"></div>
+<div class="frow"><label for="in_s4">Score 4 (%)</label><input type="number" id="in_s4" value="92" step="any"></div>
+<div class="frow"><label for="in_w4">Weight 4 (%)</label><input type="number" id="in_w4" value="35" step="any"></div>
+<button type="submit">Calculate</button>
+</form>
+<div id="result"></div>
+<section class="about"><h2>About the Grade Calculator</h2><p>Weighted average = &Sigma;(score &times; weight)/&Sigma;(weights). Leave the weights blank to average all scores equally. Letter scale: A from 90, B from 80, C from 70, D from 60, F below.</p></section>
+<section class="related"><h2>Related School calculators</h2><p><a href="gpa-calculator.html">GPA Calculator</a> &nbsp; <a href="fraction-calculator.html">Fraction Calculator</a> &nbsp; <a href="quadratic-equation-calculator.html">Quadratic Equation Calculator</a> &nbsp; <a href="combination-calculator.html">Combination Calculator</a></p></section>
+</main>
+<footer><p>CalcMate &mdash; free online calculators, part of the <a href="https://whereismyschool.org">Whereismyschool</a> family. Results are estimates for general information only, not professional advice.</p></footer>
+<script>
+function v(id){var e=document.getElementById('in_'+id); if(!e) return '';
+ if(e.type==='number'){ if(e.value==='') return NaN; return parseFloat(e.value);} return e.value;}
+function err(m){throw new Error(m);}
+function fmt(n,d){d=(d===undefined)?2:d; if(typeof n!=='number'||!isFinite(n)) return '—';
+ return n.toLocaleString('en-US',{minimumFractionDigits:Math.min(d,2),maximumFractionDigits:d});}
+function show(html){document.getElementById('result').innerHTML='<div class="box ok">'+html+'</div>';}
+function showErr(m){document.getElementById('result').innerHTML='<div class="box error">'+m+'</div>';}
+function run(e){e.preventDefault(); try{compute();}catch(ex){ if(ex instanceof Error && ex.message) showErr(ex.message);} return false;}
+
+
+function compute(){
+var num=0, den=0, empty=0, vals=[];
+for(var i=1;i<=4;i++){var s=v('s'+i), w=v('w'+i);
+ if(!isNaN(s)&&s!==''){ if(isNaN(w)||w===''){vals.push(s);} else {num+=s*w; den+=w;} } else { if(!(isNaN(w)||w==='')) err('Enter a score for every weight you provide.'); }
+}
+for(var i=0;i<vals.length;i++){num+=vals[i]; den+=1;}
+if(den===0) err('Enter at least one score.');
+var g=num/den;
+var letter=g>=90?'A':g>=80?'B':g>=70?'C':g>=60?'D':'F';
+show('<p>Weighted average: <b>'+fmt(g,2)+'%</b></p><p>Letter grade: <b>'+letter+'</b></p>');
+}
+</script>
+</body></html>

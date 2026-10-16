@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Concrete Calculator | CalcMate</title>
+<meta name="description" content="Concrete calculator: volume of a slab in cubic meters and yards, and number of bags needed.">
+<link rel="canonical" href="https://calculators.whereismyschool.org/concrete-calculator.html">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='6' fill='%230f766e'/%3E%3Ctext x='16' y='23' font-size='17' font-family='Arial' font-weight='bold' fill='white' text-anchor='middle'%3E%25%3C/text%3E%3C/svg%3E">
+<link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+<header class="site-head"><a class="brand" href="index.html">Calc<span>Mate</span></a></header>
+<main>
+<nav class="crumbs"><a href="index.html">Calculators</a> &rsaquo; Home</nav>
+<h1>Concrete Calculator</h1>
+<p class="lead">Calculate how much concrete a slab needs: volume in cubic meters and yards, plus the number of bags.</p>
+<form class="calc" onsubmit="return run(event)">
+<div class="frow"><label for="in_len">Length (m)</label><input type="number" id="in_len" value="5" step="any"></div>
+<div class="frow"><label for="in_wid">Width (m)</label><input type="number" id="in_wid" value="4" step="any"></div>
+<div class="frow"><label for="in_th">Thickness (cm)</label><input type="number" id="in_th" value="10" step="any"></div>
+<button type="submit">Calculate</button>
+</form>
+<div id="result"></div>
+<section class="about"><h2>About the Concrete Calculator</h2><p>Volume = length &times; width &times; thickness. Bags: an 80 lb (36 kg) bag yields about 0.017 m&sup3; (0.6 cu ft) of mixed concrete. Order or mix about 10% extra for spillage and uneven ground.</p></section>
+<section class="related"><h2>Related Home calculators</h2><p><a href="paint-calculator.html">Paint Calculator</a></p></section>
+</main>
+<footer><p>CalcMate &mdash; free online calculators, part of the <a href="https://whereismyschool.org">Whereismyschool</a> family. Results are estimates for general information only, not professional advice.</p></footer>
+<script>
+function v(id){var e=document.getElementById('in_'+id); if(!e) return '';
+ if(e.type==='number'){ if(e.value==='') return NaN; return parseFloat(e.value);} return e.value;}
+function err(m){throw new Error(m);}
+function fmt(n,d){d=(d===undefined)?2:d; if(typeof n!=='number'||!isFinite(n)) return '—';
+ return n.toLocaleString('en-US',{minimumFractionDigits:Math.min(d,2),maximumFractionDigits:d});}
+function show(html){document.getElementById('result').innerHTML='<div class="box ok">'+html+'</div>';}
+function showErr(m){document.getElementById('result').innerHTML='<div class="box error">'+m+'</div>';}
+function run(e){e.preventDefault(); try{compute();}catch(ex){ if(ex instanceof Error && ex.message) showErr(ex.message);} return false;}
+
+
+function compute(){
+var l=v('len'), w=v('wid'), t=v('th');
+if(!(l>0&&w>0&&t>0)) err('Enter positive dimensions.');
+var vol=l*w*(t/100);
+var bags=Math.ceil(vol/0.017);
+var bags10=Math.ceil(vol*1.1/0.017);
+show('<p>Volume: <b>'+fmt(vol,3)+' m&sup3;</b> = '+fmt(vol*1.30795,3)+' cubic yards</p><p>Bags needed (80 lb / 0.017 m&sup3; each): <b>'+bags+'</b></p><p>With 10% extra for waste: <b>'+bags10+'</b> bags</p><p class="small">Bag yield varies by mix: check the figure printed on your bag.</p>');
+}
+</script>
+</body></html>
